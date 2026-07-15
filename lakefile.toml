@@ -1,0 +1,30 @@
+name = "KaltonPeck"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["KaltonPeck"]
+
+lintDriver = "batteries/runLinter"
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "checkdecls"
+git = "https://github.com/PatrickMassot/checkdecls.git"
+
+[[require]]
+name = "«doc-gen4»"
+git = "https://github.com/leanprover/doc-gen4"
+rev = "v4.31.0"
+
+# Keep Mathlib as the final require entry.
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.31.0"
+
+[[lean_lib]]
+name = "KaltonPeck"

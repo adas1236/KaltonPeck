@@ -1,0 +1,55 @@
+\section{Hyperplanes}
+
+\begin{lemma}[Codimension-one extension and rank-one defect]\label{lem:hyperplane-extension}
+Let $X$ be a real Banach space, let $H\subseteq X$ be a closed linear subspace with
+$\dim(X/H)=1$, and let $J:H\to H$ be bounded with $J^2=-I_H$.  Then there is a one-dimensional
+closed subspace $F$ with a topological direct sum $X=H\oplus F$ and a bounded operator $T:X\to X$
+such that
+\[
+  T(h+f)=Jh+f\qquad(h\in H,\ f\in F).
+\]
+For this operator,
+\[
+  (T^2+I)(h+f)=2f,
+  \qquad
+  \ran(T^2+I)=F,
+  \qquad
+  \rank(T^2+I)=1.
+\]
+\uses{def:complex-hyperplane,def:fredholm-rank}
+\end{lemma}
+
+\begin{proof}
+Because $H$ is closed and $X/H$ is finite-dimensional, the finite-codimension complement theorem
+gives a closed topological complement $F$.  The quotient--complement isomorphism $F\simeq X/H$
+gives $\dim F=1$.  Let $P_H$ and $P_F$ be the bounded projections associated with
+$X=H\oplus F$, and define
+\[
+  Tx=J(P_Hx)+P_Fx,
+\]
+where the two terms are included in $X$.  This is bounded.  For the unique decomposition $x=h+f$,
+the relation $J^2=-I_H$ gives
+\[
+  (T^2+I)(h+f)=J^2h+f+h+f=2f.
+\]
+Thus the range is contained in $F$.  Conversely, every $f\in F$ equals
+$(T^2+I)(\tfrac12f)$, so the range is exactly $F$ and has dimension one.
+\end{proof}
+
+\begin{theorem}[No hyperplane complex structure]\label{thm:no-hyperplane-complex}
+Let $Z_2$ be a complete real normed space with a Kalton--Peck presentation.  For every closed linear
+subspace $H\subseteq Z_2$ with $\dim(Z_2/H)=1$, there is no bounded operator $J:H\to H$ satisfying
+$J^2=-I_H$.
+\uses{lem:hyperplane-extension,thm:z2-rank-parity}
+\lean{KaltonPeck.noHyperplaneComplexStructure}
+\end{theorem}
+
+\begin{proof}
+Suppose such an $H$ and $J$ existed.  Lemma~\ref{lem:hyperplane-extension} would give a bounded
+operator $T$ on $Z_2$ for which $T^2+I$ has finite rank and
+\[
+  \rank(T^2+I)=1.
+\]
+Theorem~\ref{thm:z2-rank-parity} says that this rank is even, whereas $1$ is not even.  This
+contradiction proves the assertion.
+\end{proof}

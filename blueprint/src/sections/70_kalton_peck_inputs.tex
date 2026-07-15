@@ -1,0 +1,352 @@
+\section{The canonical Kalton--Peck input and transport}
+
+\begin{definition}[The presentation used for $Z_2$]\label{def:kp-presentation}
+For a real sequence $x=(x_n)_{n\geq0}$ with $\sum_n x_n^2<\infty$, put
+\[
+  \|x\|_2=\left(\sum_{n=0}^{\infty}x_n^2\right)^{1/2}.
+\]
+For a square-summable real sequence $x$, define its Kalton--Peck centralizer coordinatewise by
+\[
+  (\mathrm{KP}(x))_n=2x_n\log\frac{|x_n|}{\|x\|_2},
+\]
+with the whole coordinate declared to be zero when $x_n=0$; this convention also covers the zero
+sequence.  A pair $(u,x)$ of real sequences is \emph{admissible} when both $x$ and
+$u-\mathrm{KP}(x)$ are square-summable, and for such a pair put
+\[
+  q(u,x)=\|u-\mathrm{KP}(x)\|_2+\|x\|_2.
+\]
+A \emph{real Kalton--Peck presentation} of a real normed space $Z$ consists of an injective
+real-linear coordinate map
+\[
+  \kappa_Z:Z\longrightarrow(\mathbb R^{\mathbb N})^2
+\]
+whose range is exactly the admissible pairs, together with constants $c,C>0$ such that
+\[
+  c\,q(\kappa_Zz)\leq\|z\|\leq C\,q(\kappa_Zz)
+  \qquad(z\in Z).
+\]
+\lean{KaltonPeck.IsSquareSummable,KaltonPeck.l2Norm,KaltonPeck.centralizer,KaltonPeck.IsAdmissiblePair,KaltonPeck.kaltonPeckQuasiNorm,KaltonPeck.RealKaltonPeckPresentation}\leanok
+\end{definition}
+
+\begin{lemma}[Normalization equivalence for the canonical model]
+\label{lem:kp-normalization}
+For a square-summable real sequence $x$, put
+\[
+  K_0(x)_n=x_n\log\frac{|x_n|}{\|x\|_2},
+\]
+with value zero when $x_n=0$.  Then
+\[
+  \mathrm{KP}(x)=2K_0(x).
+\]
+Call a pair $(a,x)$ \emph{$K_0$-admissible} when
+\[
+  a\in\ell_\infty,\qquad x\in\ell_2,
+  \qquad a-K_0(x)\in\ell_2.
+\]
+The real-linear map on pairs of real sequences
+\[
+  e_0(u,x)=(u/2,x)
+\]
+restricts to a bijection from the admissible pairs of Definition~\ref{def:kp-presentation} to the
+$K_0$-admissible pairs, with inverse $(a,x)\mapsto(2a,x)$.  If
+\[
+  q_0(a,x)=\|a-K_0(x)\|_2+\|x\|_2,
+\]
+then
+\[
+  q_0(e_0(u,x))
+   =\frac12\|u-\mathrm{KP}(x)\|_2+\|x\|_2
+\]
+and consequently
+\[
+  \frac12q(u,x)\leq q_0(e_0(u,x))\leq q(u,x).
+\]
+\uses{def:kp-presentation}
+\end{lemma}
+
+\begin{proof}
+Let $\mathrm e=\exp(1)$.  If $x=0$, the asserted bound
+$|K_0(x)_n|\leq\|x\|_2/\mathrm e$ is immediate.  Otherwise put
+$r_n=|x_n|/\|x\|_2$.  At a nonzero coordinate, $0<r_n\leq1$, and the elementary inequality
+$r|\log r|\leq1/\mathrm e$ gives
+\[
+  |K_0(x)_n|=\|x\|_2r_n|\log r_n|\leq\frac{\|x\|_2}{\mathrm e}.
+\]
+The zero-coordinate convention gives the same bound at the remaining coordinates.  Thus
+$K_0(x)\in\ell_\infty$.  Since every square-summable sequence is bounded, the condition
+$a-K_0(x)\in\ell_2$ also forces $a\in\ell_\infty$.
+
+The identity $\mathrm{KP}=2K_0$ is coordinatewise.  Therefore
+\[
+  \frac u2-K_0(x)=\frac12\bigl(u-\mathrm{KP}(x)\bigr).
+\]
+For an admissible pair, the right-hand side is square-summable, while the preceding bound shows that
+$u/2$ is bounded.  Conversely, a $K_0$-admissible pair satisfies
+$2a-\mathrm{KP}(x)=2(a-K_0(x))\in\ell_2$.  This proves preservation and reflection of the
+admissibility conditions, the inverse formula, and the exact quasi-norm identity.  The two
+inequalities follow by comparing $\frac12A+B$ with $A+B$ for $A,B\geq0$.
+\end{proof}
+
+\begin{theorem}[Canonical Kalton--Peck Banach model]\label{thm:kp-canonical-banach}
+For the centralizer and quasi-norm of Definition~\ref{def:kp-presentation}, the admissible pairs are
+closed under coordinatewise real-linear operations, and $q$ is equivalent to a complete norm.
+Consequently there exists a complete real normed space $Z_2^{\mathrm{can}}$ whose coordinate map is
+a Kalton--Peck presentation.  In this model, the finite-coordinate pairs are dense.  Fix one such
+presented space for the remainder of the blueprint.
+\uses{def:kp-presentation,lem:kp-normalization}
+\end{theorem}
+
+\begin{proof}
+Section~3 of Castillo--Cuellar--Gonz\'alez--Pino \cite{CCGP} defines the canonical real
+Kalton--Peck model using $K_0$ and $q_0$ and states that $q_0$ is equivalent to a complete norm.
+The same section records the natural interleaved coordinate vectors as a Schauder basis, so their
+finite linear span is dense.
+
+Transport that complete norm and the coordinate operations through the linear bijection $e_0^{-1}$
+from Lemma~\ref{lem:kp-normalization}.  The two-sided estimates in that lemma show that the
+transported norm is equivalent to $q$.  The resulting complete real normed space, with its chosen
+coordinates, is the required $Z_2^{\mathrm{can}}$.  Since $e_0^{-1}$ only rescales the
+first-coordinate basis vectors, it also transports density of finite-coordinate pairs.
+\end{proof}
+
+\begin{theorem}[Equivalence of presented models]\label{thm:presentation-equivalence}
+Let $X$ and $Y$ be complete real normed spaces with Kalton--Peck presentations.  There is a unique
+real-linear bijection $e:X\to Y$ satisfying
+\[
+  \kappa_Y(ex)=\kappa_X(x)\qquad(x\in X),
+\]
+where $\kappa_X$ and $\kappa_Y$ are the two coordinate maps.  It is a bounded linear isomorphism.
+If $a_X,b_X,a_Y,b_Y>0$ are comparison constants for the two presentations, then
+\[
+  \|ex\|\leq \frac{b_Y}{a_X}\|x\|,
+  \qquad
+  \|e^{-1}y\|\leq \frac{b_X}{a_Y}\|y\|.
+\]
+\uses{def:kp-presentation}
+\end{theorem}
+
+\begin{proof}
+For $x\in X$, the pair $\kappa_X(x)$ is admissible, so surjectivity of the $Y$-presentation gives a
+point $ex\in Y$ with $\kappa_Y(ex)=\kappa_X(x)$; injectivity of $\kappa_Y$ makes it unique.
+Coordinate linearity and injectivity show that $e$ preserves zero, addition, and real scalar
+multiplication.  The same construction from $Y$ to $X$ is inverse to $e$.  Finally,
+\[
+  \|ex\|\leq b_Yq(\kappa_Y(ex))=b_Yq(\kappa_Xx)\leq (b_Y/a_X)\|x\|,
+\]
+and the symmetric calculation gives the inverse bound.  Thus $e$ is a bounded linear isomorphism.
+\end{proof}
+
+\begin{theorem}[Canonical Kalton--Swanson form]\label{thm:ks-primary}
+Let $Z_{2,0}$ denote the published canonical model based on $K_0$, with strong form $\Omega_0$
+from Castillo--Cuellar--Gonz\'alez--Pino, Proposition~3.1.  Write
+\[
+  D_0:Z_{2,0}\longrightarrow\strongdual{Z_{2,0}},
+  \qquad (D_0z)(w)=\Omega_0(z,w),
+\]
+for its induced continuous linear isomorphism.  On finite coordinate vectors,
+\[
+  \Omega_0((a,x),(b,y))=\langle a,y\rangle-\langle b,x\rangle,
+\]
+and for arbitrary vectors this denotes its continuous extension, not a difference of two
+separately asserted convergent series.
+
+On the normalized canonical model define
+\[
+  \Omega_{\mathrm{can}}(z,w)=2\Omega_0(e_0z,e_0w).
+\]
+Thus, when $z$ and $w$ have coordinates $(u,x)$ and $(v,y)$, respectively, the combined
+finite-coordinate expression is
+\[
+  \Omega_{\mathrm{can}}(z,w)
+    =\langle u,y\rangle-\langle v,x\rangle.
+\]
+Its induced map is
+\[
+  D_{\mathrm{can}}=2e_0^*D_0e_0,
+\]
+where $e_0^*f=f\circ e_0$.  Hence $\Omega_{\mathrm{can}}$ is a continuous strong alternating form.
+\uses{thm:kp-canonical-banach,lem:kp-normalization,def:strong-form}
+\end{theorem}
+
+\begin{proof}
+Proposition~3.1 of Castillo--Cuellar--Gonz\'alez--Pino \cite{CCGP} states that $\Omega_0$ is strong.
+For the chosen coordinates,
+\[
+  2\Omega_0((u/2,x),(v/2,y))
+    =\langle u,y\rangle-\langle v,x\rangle.
+\]
+Pullback by the bounded linear isomorphism $e_0$ preserves continuity and alternation, and
+multiplication by the nonzero scalar $2$ preserves strongness.  Evaluation gives the displayed
+formula for $D_{\mathrm{can}}$.
+\end{proof}
+
+\begin{theorem}[Transported Kalton--Swanson form]\label{thm:ks-transport}
+Let $X$ be a complete real normed space with a Kalton--Peck presentation, and let
+$e:X\simeq Z_2^{\mathrm{can}}$ be the coordinate-matching bounded linear isomorphism.  Then
+\[
+  \Omega_X(x,y)=\Omega_{\mathrm{can}}(ex,ey)
+\]
+is a continuous strong alternating form on $X$.  If
+$e^*:\strongdual{Z_2^{\mathrm{can}}}\to\strongdual X$ denotes pullback, $e^*f=f\circ e$, then the
+induced isomorphism is
+\[
+  D_X=e^*\circ D_{\mathrm{can}}\circ e:X\longrightarrow\strongdual X.
+\]
+\uses{thm:ks-primary,thm:presentation-equivalence,def:strong-form}
+\end{theorem}
+
+\begin{proof}
+Composition with $e$ in both variables preserves bilinearity, continuity, and alternation.  For
+$x,y\in X$,
+\[
+  (e^*D_{\mathrm{can}}ex)(y)=D_{\mathrm{can}}(ex)(ey)
+  =\Omega_{\mathrm{can}}(ex,ey)=\Omega_X(x,y),
+\]
+so the displayed composition is precisely the induced map.  Each of its three factors is a bounded
+linear isomorphism, hence so is $D_X$.
+\end{proof}
+
+\begin{theorem}[Canonical normalized-block theorem]\label{thm:block-primary}
+For a finite-support sequence $w$, write $\supp w=\{k:w_k\ne0\}$.  Let $(w_n)$ be a
+\emph{successive normalized block sequence} in $\ell_2$: every $w_n$ has finite nonempty support,
+$\|w_n\|_2=1$, and
+\[
+  \max\supp w_n<\min\supp w_{n+1}\qquad(n\geq0).
+\]
+Section~4.4 of Castillo--Cuellar--Gonz\'alez--Pino defines on the $K_0$ model the block operator
+$T_w^0$ by
+\[
+  T_w^0(e_n,0)=(w_n,0),
+  \qquad
+  T_w^0(0,e_n)=(K_0(w_n),w_n).
+\]
+Put
+\[
+  W_w=e_0^{-1}T_w^0e_0
+\]
+on $Z_2^{\mathrm{can}}$.  Then
+\[
+  W_w(e_n,0)=(w_n,0),
+  \qquad
+  W_w(0,e_n)=(\mathrm{KP}(w_n),w_n).
+\]
+The operator $W_w$ is bounded and injective with complemented range, preserves
+$\Omega_{\mathrm{can}}$, and satisfies $W_w^+W_w=I$.  Moreover, $W_wW_w^+$ is a bounded projection
+onto $\ran W_w$.  If $(v_n)$ is another successive normalized block sequence whose supports are
+disjoint from all supports of the $w_n$, then
+\[
+  W_w^+W_v=0=W_v^+W_w.
+\]
+\uses{thm:kp-canonical-banach,lem:kp-normalization,thm:ks-primary}
+\end{theorem}
+
+\begin{proof}
+The boundedness, into-isometry, complemented-range, symplectic, and projection assertions for
+$T_w^0$ are exactly those stated in \cite[\S4.4]{CCGP}.  Conjugating through $e_0$ gives the
+corresponding assertions for $W_w$.  On the two canonical coordinate generators,
+\[
+ e_0^{-1}T_w^0e_0(e_n,0)
+ =e_0^{-1}T_w^0(e_n/2,0)
+ =e_0^{-1}(w_n/2,0)
+ =(w_n,0)
+\]
+and
+\[
+ e_0^{-1}T_w^0e_0(0,e_n)
+   =(2K_0(w_n),w_n)
+   =(\mathrm{KP}(w_n),w_n).
+\]
+
+For every finitely supported $w$, the zero-coordinate convention gives
+$\supp K_0(w)\subseteq\supp w$, and likewise $\supp\mathrm{KP}(w)\subseteq\supp w$.  Write
+$e_n^0=(e_n,0)$ and $e_n^1=(0,e_n)$.  Mutual support-disjointness gives all four generator
+pairings:
+\[
+\begin{aligned}
+ \Omega_{\mathrm{can}}(W_we_n^0,W_ve_m^0)&=0,\\
+ \Omega_{\mathrm{can}}(W_we_n^0,W_ve_m^1)&=\langle w_n,v_m\rangle=0,\\
+ \Omega_{\mathrm{can}}(W_we_n^1,W_ve_m^0)&=-\langle v_m,w_n\rangle=0,\\
+ \Omega_{\mathrm{can}}(W_we_n^1,W_ve_m^1)
+   &=\langle\mathrm{KP}(w_n),v_m\rangle
+     -\langle\mathrm{KP}(v_m),w_n\rangle=0.
+\end{aligned}
+\]
+Bilinearity gives
+\[
+  \Omega_{\mathrm{can}}(W_wz,W_vz')=0
+\]
+for finite coordinate vectors.  Those vectors are dense by
+Theorem~\ref{thm:kp-canonical-banach}; continuity of the block maps and of the form extends the
+identity to all vectors.  The defining adjoint equation and strongness then give both cross-adjoint
+identities.
+\end{proof}
+
+\begin{theorem}[Transported normalized-block theorem]\label{thm:block-transport}
+Let $X$ be any complete real normed space with a Kalton--Peck presentation, let
+$e:X\simeq Z_2^{\mathrm{can}}$ match coordinates, and let $W_w$ be a canonical block operator from
+Theorem~\ref{thm:block-primary}.  Put
+\[
+  \widetilde W_w=e^{-1}W_we.
+\]
+Then $\widetilde W_w$ is bounded and injective with complemented range, it preserves the
+transported form $\Omega_X$, and $\widetilde W_w^+\widetilde W_w=I$.  Moreover,
+$\widetilde W_w\widetilde W_w^+$ is a bounded projection onto $\ran\widetilde W_w$.  For a second
+successive normalized block sequence $(v_n)$ mutually support-disjoint from $(w_n)$, one also has
+\[
+  \widetilde W_w^+\widetilde W_v=0
+  =\widetilde W_v^+\widetilde W_w.
+\]
+\uses{thm:block-primary,thm:presentation-equivalence,thm:ks-transport}
+\end{theorem}
+
+\begin{proof}
+Conjugation by the bounded linear isomorphism $e$ preserves boundedness, injectivity, complemented
+range, and the projection assertion.  Since
+$\Omega_X(x,y)=\Omega_{\mathrm{can}}(ex,ey)$, the definition of symplectic adjoint gives
+\[
+  \widetilde W_w^+=e^{-1}W_w^+e.
+\]
+Substitution transports form preservation, the two same-family identities, and both cross-family
+identities from Theorem~\ref{thm:block-primary}.
+\end{proof}
+
+\begin{definition}[Upper semi-Fredholm]\label{def:upper-semi}
+A bounded operator is \emph{upper semi-Fredholm} when its kernel is finite-dimensional and its
+range is closed.
+\uses{def:fredholm-rank}
+\end{definition}
+
+\begin{theorem}[Canonical Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-primary}
+On $Z_2^{\mathrm{can}}$ with the canonical Kalton--Swanson form, let $A$ be a bounded operator.  If
+$\ker A$ is finite-dimensional and $\ran A$ is closed, then $A^+A$ is Fredholm.
+\uses{thm:ks-primary,def:upper-semi,def:fredholm-rank}
+\end{theorem}
+
+\begin{proof}
+This is Lemma~5.4 of Castillo--Gonz\'alez--Pino \cite{CGP}, in the cited preprint version.
+\end{proof}
+
+\begin{theorem}[Transported Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-transport}
+Let $X$ be a complete real normed space with a Kalton--Peck presentation and its transported
+Kalton--Swanson form.  If a bounded operator $A$ on $X$ is upper semi-Fredholm, then $A^+A$ is
+Fredholm.
+\uses{thm:cgp-primary,thm:presentation-equivalence,thm:ks-transport,lem:fredholm-calculus,lem:adjoint-calculus}
+\end{theorem}
+
+\begin{proof}
+Let $e:X\simeq Z_2^{\mathrm{can}}$ match coordinates and set $A_{\mathrm{can}}=eAe^{-1}$.  The map
+$e$ identifies $\ker A$ with $\ker A_{\mathrm{can}}$ and $\ran A$ with
+$\ran A_{\mathrm{can}}$; because $e$ is a homeomorphism, it also preserves finite-dimensionality and
+closedness.  Hence $A_{\mathrm{can}}$ is upper semi-Fredholm, so
+$A_{\mathrm{can}}^+A_{\mathrm{can}}$ is Fredholm by Theorem~\ref{thm:cgp-primary}.
+
+The formula defining the transported form gives
+\[
+  A_{\mathrm{can}}^+=eA^+e^{-1},
+  \qquad
+  A_{\mathrm{can}}^+A_{\mathrm{can}}=e(A^+A)e^{-1}.
+\]
+The first identity follows by inserting $eAe^{-1}$ into the defining adjoint equation and using
+uniqueness from strongness.  Fredholm invariance under bounded linear equivalence transports the
+conclusion back to $A^+A$.
+\end{proof}

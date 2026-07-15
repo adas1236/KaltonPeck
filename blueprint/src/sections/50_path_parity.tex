@@ -1,0 +1,96 @@
+\section{The bounded mod-\texorpdfstring{$2$}{2} path theorem}
+
+\begin{lemma}[Kernel complement and dual splitting]\label{lem:kernel-splitting}
+Let $S:X\to\strongdual X$ be the Fredholm operator induced by a continuous alternating form on a
+reflexive real Banach space, and put $F=\ker S$.  There is a closed complement $X=F\oplus Y$.
+Restriction and the bounded projections give
+\[
+  \strongdual X=\Ann(Y)\oplus\Ann(F),\qquad \Ann(Y)\simeq\strongdual F,
+\]
+with continuous coordinate projections.  Moreover, $\ran S=\Ann(F)$, and the restriction
+$S|_Y:Y\to\Ann(F)$ is a continuous linear isomorphism.
+\uses{def:weak-form,lem:skew-fredholm-range}
+\end{lemma}
+
+\begin{proof}
+The finite-dimensional space $F$ has a closed topological complement $Y$.  Dualizing the bounded
+projections gives the displayed annihilator decomposition, while restriction identifies
+$\Ann(Y)$ continuously with $\strongdual F$.  Alternation gives $S^*\iota_X=-S$, so
+Lemma~\ref{lem:skew-fredholm-range} gives $\ran S=\Ann(F)$.  The restriction of $S$ to $Y$ is
+injective because $Y\cap F=0$, and it is onto $\Ann(F)$ because the $F$-component of any preimage
+may be removed.  The bounded inverse theorem now makes this restriction a continuous linear
+isomorphism.
+\end{proof}
+
+\begin{lemma}[Local Schur reduction]\label{lem:schur-reduction}
+Let $X$ be a real reflexive Banach space, let $J\subseteq\mathbb R$, let $t_0\in J$, and let
+$t\mapsto S_t:X\to\strongdual X$ be norm-continuous on $J$ in its subspace topology.  Suppose that
+every $S_t$ is induced by a continuous alternating form and that $S_{t_0}$ is Fredholm.  Using
+Lemma~\ref{lem:kernel-splitting}, write
+\[
+  X=F\oplus Y,\qquad \strongdual X=\Ann(Y)\oplus\Ann(F),
+  \qquad F=\ker S_{t_0}.
+\]
+For $t$ in a sufficiently small neighborhood of $t_0$ relative to $J$, there are a bounded
+injective linear map $m_t:F\to X$ and a continuous alternating form $c_t$ on $F$ such that
+\[
+  m_t:\rad c_t\simeq\ker S_t
+\]
+is a linear isomorphism.
+\uses{def:weak-form,lem:kernel-splitting}
+\end{lemma}
+
+\begin{proof}
+Using the continuous coordinate projections from Lemma~\ref{lem:kernel-splitting}, write
+\[
+  S_t=\begin{pmatrix}A_t&B_t\\ C_t&D_t\end{pmatrix},
+\]
+where
+\[
+  A_t:F\to\Ann(Y),\quad B_t:Y\to\Ann(Y),\quad
+  C_t:F\to\Ann(F),\quad D_t:Y\to\Ann(F).
+\]
+At $t_0$, the identities $\ran S_{t_0}=\Ann(F)$ and $S_{t_0}|_F=0$ identify $D_{t_0}$ with the
+isomorphism $S_{t_0}|_Y:Y\to\Ann(F)$ from Lemma~\ref{lem:kernel-splitting}.  Since the blocks vary
+continuously with $t$ and invertibility is open, $D_t$ remains invertible for all nearby $t$.
+Put
+\[
+  L_t=D_t^{-1}C_t,\qquad m_t(f)=f-L_tf.
+\]
+Projection onto $\Ann(F)$ gives
+\[
+  \pi_{\Ann(F)}S_tm_t(f)=C_tf-D_tL_tf=0.
+\]
+Conversely, the same lower block equation for a vector in $\ker S_t$ forces its $Y$-component to
+be $-L_tf$.  Thus every kernel vector is uniquely of the form $m_t(f)$, and projection onto $F$
+shows that $m_t$ is injective.
+
+Let $b_t$ induce $S_t$ and define $c_t(f,g)=b_t(m_t(f),m_t(g))$.  The boundedness of $m_t$ makes
+$c_t$ a continuous alternating form on $F$.  If $m_t(f)\in\ker S_t$, then $f\in\rad c_t$.
+Conversely, suppose that $f\in\rad c_t$.  The lower block identity puts $S_tm_t(f)$ in
+$\Ann(Y)$.  For $g\in F$, this functional annihilates $L_tg\in Y$, so
+\[
+  (S_tm_t(f))(g)=(S_tm_t(f))(m_t(g))=c_t(f,g)=0.
+\]
+It therefore also lies in $\Ann(F)$.  Since the two summands have zero intersection,
+$S_tm_t(f)=0$.  Hence $m_t$ restricts to the claimed linear isomorphism.
+\end{proof}
+
+\begin{theorem}[Bounded-operator mod-$2$ path theorem]\label{thm:mod2-path}
+Let $X$ be a real reflexive Banach space and let $b_t$, $0\leq t\leq1$, be continuous alternating
+forms whose induced operators $S_t:X\to\strongdual X$ depend continuously on $t$ in operator
+norm.  If each $S_t$ is Fredholm, then $\dim\ker S_t$ is independent of $t$ modulo $2$.
+\uses{lem:schur-reduction,lem:finite-alt-even}
+\end{theorem}
+
+\begin{proof}
+Fredholmness makes every $\ker S_t$ finite-dimensional.  Fix $t_0$.
+Lemma~\ref{lem:schur-reduction} identifies $\ker S_t$ near $t_0$, within the relative topology of
+$[0,1]$, with the radical of an alternating form $c_t$ on the fixed finite-dimensional space
+$F=\ker S_{t_0}$.  Lemma~\ref{lem:finite-alt-even} gives
+\[
+  \dim\ker S_t=\dim\rad c_t\equiv\dim F=\dim\ker S_{t_0}\pmod2.
+\]
+Thus the parity-valued function $t\mapsto\dim\ker S_t\bmod2$ is locally constant on $[0,1]$.
+Because the interval is connected, this function is constant.
+\end{proof}

@@ -1,0 +1,226 @@
+\section{Reusable algebraic and functional-analytic infrastructure}
+
+\begin{lemma}[Quotient by the kernel]\label{lem:quotient-range}
+Let $X$ and $Y$ be real Banach spaces and let $A:X\to Y$ be bounded and linear. The map
+induced by $A$ is a linear isomorphism
+\[
+  X/\ker A\simeq\ran A,\qquad [x]\longmapsto Ax.
+\]
+Consequently, if $A$ has finite rank, then $\ker A$ is closed, $X/\ker A$ is finite-dimensional,
+and
+\[
+  \codim_X\ker A=\dim\ran A=\rank A.
+\]
+\uses{def:fredholm-rank}
+\end{lemma}
+
+\begin{proof}
+Send the class of $x$ to $Ax$. This is well-defined because two representatives differ by an
+element of the kernel. It is injective by the same observation and surjective by the definition
+of the range. Continuity of $A$ makes its kernel closed. Transporting finite-dimensionality and
+dimension through the isomorphism gives the last assertion.
+\end{proof}
+
+\begin{lemma}[Continuous double annihilator]\label{lem:double-annihilator}
+Let $W$ be a closed subspace of a real Banach space $X$ and let
+\[
+  \Ann(W)=\{f\in\strongdual X:f(w)=0\text{ for every }w\in W\}.
+\]
+Then
+\[
+  W=\{x\in X:f(x)=0\text{ for every }f\in\Ann(W)\}.
+\]
+\end{lemma}
+
+\begin{proof}
+Every $w\in W$ is annihilated by definition. Conversely, if $x\notin W$, the continuous
+Hahn--Banach separation theorem supplies $f\in\strongdual X$ and a strict separation between $x$
+and $W$. The functional must vanish on $W$: if $f(w)\ne0$ for some $w\in W$, arbitrary real
+multiples of $w$ make $f$ unbounded above and below on $W$, contradicting strict separation.
+The separating inequality then gives $f(x)\ne0$, so $x$ does not belong to the displayed double
+annihilator.
+\end{proof}
+
+\begin{lemma}[Continuous dual of a quotient]\label{lem:quotient-dual}
+If $W$ is closed in a Banach space $X$, pullback along the quotient map $q:X\to X/W$ is a
+continuous linear isomorphism
+\[
+  \strongdual{(X/W)}\simeq\Ann(W),
+  \qquad \varphi\longmapsto\varphi\circ q.
+\]
+\end{lemma}
+
+\begin{proof}
+Pullback is injective because $q$ is onto and its image lies in $\Ann(W)$. If
+$f\in\Ann(W)$, the rule $[x]\mapsto f(x)$ is well-defined and bounded for the quotient norm, and
+is inverse to pullback. Since $W$ is closed, $X/W$ is Banach, while $\Ann(W)$ is a closed
+subspace of $\strongdual X$ and hence Banach. The bounded inverse theorem therefore promotes
+pullback to a continuous linear isomorphism.
+\end{proof}
+
+\begin{lemma}[Strong symplectic spaces are reflexive]\label{lem:strong-reflexive}
+Every strong symplectic Banach space is reflexive.
+\uses{def:strong-form,def:transpose-adjoint}
+\end{lemma}
+
+\begin{proof}
+Let $D:X\to\strongdual X$ be the isomorphism induced by the form and let
+$\iota:X\to\strongdual{\strongdual X}$ be the canonical embedding. Alternation gives
+\[
+  D^*\iota=-D.
+\]
+Indeed, $(D^*\iota x)(y)=\omega(y,x)=-\omega(x,y)$. The transpose
+$D^*:\strongdual{\strongdual X}\to\strongdual X$ is a continuous linear isomorphism. Hence
+$\iota=-(D^*)^{-1}D$ is itself a continuous linear isomorphism, in particular onto, which is
+exactly reflexivity.
+\end{proof}
+
+\begin{lemma}[Symplectic-adjoint calculus]\label{lem:adjoint-calculus}
+For bounded operators $A,B$ on a strong symplectic Banach space and $a\in\R$,
+\[
+ I^+=I,\qquad (A+B)^+=A^++B^+,\qquad (aA)^+=aA^+,
+\]
+\[
+ (AB)^+=B^+A^+,\qquad (A^+)^+=A,\qquad
+ \omega(A^+x,y)=\omega(x,Ay).
+\]
+\uses{def:transpose-adjoint,lem:strong-reflexive}
+\end{lemma}
+
+\begin{proof}
+The defining equation gives the last identity. Identity, addition, and scalar compatibility follow
+from the corresponding transpose laws. Transposition reverses composition, giving the product
+law. Apply the defining equation twice; alternation and nondegeneracy of $\omega$ then imply
+$(A^+)^+=A$. Equivalently, one may expand $D^{-1}A^*D$ and use the canonical double-dual map,
+whose surjectivity is Lemma~\ref{lem:strong-reflexive}.
+\end{proof}
+
+\begin{lemma}[Fredholm calculus used below]\label{lem:fredholm-calculus}
+Let $X,Y,Z,X',Y'$ be real Banach spaces.
+\begin{enumerate}
+\item If $A:X\to Y$ is bounded and $U:Y\simeq Y'$ and $V:X'\simeq X$ are bounded linear
+isomorphisms, then $A$ is Fredholm if and only if $UAV$ is Fredholm. The induced kernel and
+cokernel isomorphisms preserve nullity, cokernel dimension, and Fredholm index.
+\item Multiplication by a nonzero real scalar preserves Fredholmness and index. If
+$A:X\to Y$ and $C:Y\to Z$ are bounded and $C$ is injective, then
+\[
+  \ker(CA)=\ker A.
+\]
+\item If $A:X\to Y$ and $B:Y\to Z$ are Fredholm, then $BA$ is Fredholm and
+\[
+  \operatorname{ind}(BA)=\operatorname{ind}B+\operatorname{ind}A.
+\]
+\item If a bounded map $A:X\to Y$ has a bounded left inverse, then $\ker A=0$ and $\ran A$ is
+closed; hence it has finite-dimensional kernel and closed range.
+\end{enumerate}
+\uses{def:fredholm-rank}
+\end{lemma}
+
+\begin{proof}
+Bounded linear isomorphisms carry kernels onto kernels, ranges onto ranges, and the corresponding
+quotients onto one another; they also preserve closedness and dimension. This proves the first
+assertion. Multiplication by a nonzero scalar leaves both kernel and range unchanged. If $C$ is
+injective, then $CAx=0$ if and only if $Ax=0$, proving the displayed kernel identity.
+
+For composition, $\ran A+\ker B$ is closed because $\ran A$ is closed and $\ker B$ is
+finite-dimensional. Its image in $Y/\ker B$ is closed. The map induced by $B$ is a bounded
+linear isomorphism
+\[
+  Y/\ker B\simeq\ran B,
+\]
+so it carries that image onto $B(\ran A)=\ran(BA)$. Since $\ran B$ is closed in $Z$,
+$\ran(BA)$ is closed in $Z$.
+
+There is an exact sequence
+\[
+0\longrightarrow\ker A\longrightarrow\ker(BA)\longrightarrow\ker B
+\longrightarrow Y/\ran A\longrightarrow Z/\ran(BA)\longrightarrow Z/\ran B
+\longrightarrow0.
+\]
+The map $\ker(BA)\to\ker B$ is induced by $A$; the next map sends $y\in\ker B$ to
+$y+\ran A$; the map $Y/\ran A\to Z/\ran(BA)$ is induced by $B$; and the last map is the
+natural quotient map. Their kernels are respectively the images of the preceding maps:
+$\ker A$, $\ker B\cap\ran A$, $(\ran A+\ker B)/\ran A$, and
+$\ran B/\ran(BA)$. The last map is surjective. Thus every term is finite-dimensional, and
+the alternating dimension identity for this exact sequence gives Fredholmness of $BA$ and
+index additivity.
+
+Finally, if $LA=I$, then $A$ is injective and
+\[
+  \|x\|=\|LAx\|\leq\|L\|\,\|Ax\|.
+\]
+Consequently a convergent sequence in $\ran A$ has Cauchy, hence convergent, preimages; its limit
+maps to the given range limit. Thus $\ran A$ is closed.
+\end{proof}
+
+\begin{lemma}[Range of a skew Fredholm form]\label{lem:skew-fredholm-range}
+Let $X$ be reflexive and let $S:X\to\strongdual X$ be Fredholm. Suppose that
+$S^*\iota_X=-S$, where $\iota_X:X\to\strongdual{\strongdual X}$ is the canonical embedding. If
+$N=\ker S$, then $S$ has Fredholm index zero and
+\[
+  \ran S=\Ann(N).
+\]
+\uses{def:transpose-adjoint,def:fredholm-rank,lem:double-annihilator,lem:quotient-dual}
+\end{lemma}
+
+\begin{proof}
+Since $S$ is Fredholm, $N$ is finite-dimensional and $\ran S$ is closed. The skew identity and
+surjectivity of $\iota_X$ give
+\[
+  \ker S^*=\iota_X(N).
+\]
+This kernel is exactly the continuous annihilator of $\ran S$ in $\strongdual{\strongdual X}$.
+Applying Lemma~\ref{lem:double-annihilator} to the closed subspace
+$\ran S\subseteq\strongdual X$ therefore gives
+\[
+  \ran S=\{f\in\strongdual X:f(n)=0\text{ for every }n\in N\}=\Ann(N).
+\]
+Lemma~\ref{lem:quotient-dual}, applied to $\ran S\subseteq\strongdual X$, identifies the dual of
+$(\strongdual X)/\ran S$ with $\ker S^*=\iota_X(N)$. The cokernel is finite-dimensional, so it and
+its dual have the same dimension. Thus the cokernel dimension equals $\dim N$, and the Fredholm
+index is zero.
+\end{proof}
+
+\begin{lemma}[Even rank of a finite alternating form]\label{lem:finite-alt-even}
+Let $V$ be a finite-dimensional real vector space and let $c$ be an alternating bilinear form on
+$V$. Put $\rad c=\{x\in V:c(x,y)=0\text{ for every }y\in V\}$. The induced map
+$V\to V^*$ has even rank. Consequently,
+\[
+  \dim\rad c\equiv\dim V\pmod2.
+\]
+\end{lemma}
+
+\begin{proof}
+Induct on $\dim V$. If $c=0$, its rank is zero. Otherwise choose $u,v$ with $c(u,v)\ne0$.
+Put $a=c(u,v)$ and $P=\operatorname{span}\{u,v\}$. For the fixed form $c$, write
+\[
+  P^{\circ_c}=\{z\in V:c(z,p)=0\text{ for every }p\in P\},
+\]
+and abbreviate this subspace by $P^\circ$ inside this proof. The restriction to $P$ is
+nondegenerate. For $x\in V$, define
+\[
+  p(x)=\frac{c(x,v)}a\,u-\frac{c(x,u)}a\,v.
+\]
+Then $x-p(x)\in P^\circ$, so $V=P\oplus P^\circ$. Both cross terms vanish, and the associated
+map is the direct sum of a rank-two map on $P$ and the map of the alternating restriction to
+$P^\circ$. Since $\dim P^\circ=\dim V-2$, induction makes the latter rank even. Thus the total
+rank is even, and rank--nullity gives the congruence.
+\end{proof}
+
+\begin{lemma}[Finite complex structures have even dimension]\label{lem:finite-complex-even}
+If a finite-dimensional real vector space $V$ has an endomorphism $J$ with $J^2=-I$, then
+$\dim_{\R} V$ is even.
+\end{lemma}
+
+\begin{proof}
+Define multiplication by $a+ib\in\mathbb C$ on $V$ by
+\[
+  (a+ib)v=av+bJv.
+\]
+The equation $J^2=-I$ verifies the complex scalar axioms, and the restricted real scalar action is
+the original one. A finite real spanning set also spans over $\mathbb C$, so $V$ is
+finite-dimensional over $\mathbb C$. The scalar-tower dimension formula therefore gives
+\[
+  \dim_{\R} V=\dim_{\R}\mathbb C\,\dim_{\mathbb C}V=2\dim_{\mathbb C}V.
+\]
+\end{proof}

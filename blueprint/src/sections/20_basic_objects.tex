@@ -1,0 +1,57 @@
+\section{Basic objects}
+
+\begin{definition}[Continuous alternating forms]\label{def:weak-form}
+Let $X$ be a real normed space. A \emph{continuous alternating form} on $X$ is a continuous
+bilinear map $b:X\times X\to\R$ such that $b(x,x)=0$ for every $x\in X$. Its induced operator is
+\[
+  S_b:X\longrightarrow\strongdual X,
+  \qquad (S_bx)(y)=b(x,y).
+\]
+For a subspace $E\subseteq X$, define
+\[
+  E^{\circ_b}=\{x\in X: b(x,e)=0\text{ for every }e\in E\},
+  \qquad
+  \rad(b|_E)=E\cap E^{\circ_b}.
+\]
+\end{definition}
+
+\begin{definition}[Strong symplectic form]\label{def:strong-form}
+A continuous alternating form $\omega$ on a real normed space $X$ is \emph{strong} if its induced map
+$D=S_\omega:X\to\strongdual X$ is a continuous linear isomorphism. A Banach space equipped with
+such a form is called a strong symplectic Banach space.
+\uses{def:weak-form}
+\lean{KaltonPeck.StrongSymplecticForm}\leanok
+\end{definition}
+
+\begin{definition}[Transpose and symplectic adjoint]\label{def:transpose-adjoint}
+For a bounded operator $B:X\to Y$, its transpose is the bounded map
+$B^*:\strongdual Y\to\strongdual X$ given by $B^*f=f\circ B$. If $X$ has a strong symplectic form with
+induced isomorphism $D$ and $A:X\to X$ is a bounded endomorphism, define
+\[
+  A^+=D^{-1}A^*D.
+\]
+Equivalently, $\omega(A^+x,y)=\omega(x,Ay)$ for all $x,y\in X$.
+\uses{def:strong-form}
+\lean{KaltonPeck.transpose,KaltonPeck.StrongSymplecticForm.adjoint}\leanok
+\end{definition}
+
+\begin{definition}[Fredholmness, rank, and nullity]\label{def:fredholm-rank}
+A bounded map $A:X\to Y$ is \emph{Fredholm} when $\ker A$ is finite-dimensional,
+$\ran A$ is closed, and $Y/\ran A$ is finite-dimensional. It has \emph{finite rank} when
+$\ran A$ is finite-dimensional. In the respective finite-dimensional situations, set
+\[
+  \rank A=\dim\ran A,
+  \qquad
+  \operatorname{null}A=\dim\ker A,
+  \qquad
+  \operatorname{ind}A=\dim\ker A-\dim(Y/\ran A)\in\mathbb Z.
+\]
+\lean{KaltonPeck.IsFredholm,KaltonPeck.HasFiniteRank,KaltonPeck.operatorRank,KaltonPeck.nullity}\leanok
+\end{definition}
+
+\begin{definition}[Complex structures and hyperplanes]\label{def:complex-hyperplane}
+A \emph{complex structure} on a real Banach space $X$ is a bounded operator $J:X\to X$ satisfying
+$J^2=-I$. A \emph{hyperplane} is a closed linear subspace $H\subseteq X$ with
+$\dim(X/H)=1$.
+\lean{KaltonPeck.IsComplexStructure,KaltonPeck.IsHyperplane}\leanok
+\end{definition}

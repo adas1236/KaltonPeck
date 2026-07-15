@@ -1,0 +1,202 @@
+\section{Finite-codimensional parity}
+
+\begin{lemma}[Orthogonals in a strong symplectic space]\label{lem:strong-orthogonals}
+Let $(X,\omega)$ be strong symplectic and let $W\subseteq X$ be closed and finite-codimensional.
+Then $W^\circ$ is finite-dimensional,
+\[
+  \dim W^\circ=\codim_XW,
+  \qquad
+  (W^\circ)^\circ=W.
+\]
+\uses{def:strong-form,lem:double-annihilator,lem:quotient-dual}
+\end{lemma}
+
+\begin{proof}
+Under the isomorphism $D:X\to\strongdual X$, the subspace $W^\circ$ is the inverse image of
+$\Ann(W)$. Lemma~\ref{lem:quotient-dual} identifies $\Ann(W)$ with $\strongdual{(X/W)}$, so it is
+finite-dimensional of dimension $\codim_XW$. It remains to identify the double orthogonal.
+If $x\in W$ and $z\in W^\circ$, alternation gives
+$\omega(x,z)=-\omega(z,x)=0$, hence $W\subseteq(W^\circ)^\circ$. Conversely, if
+$x\notin W$, Lemma~\ref{lem:double-annihilator} supplies $f\in\Ann(W)$ with $f(x)\ne0$.
+Choose $z\in X$ with $Dz=f$. Then $z\in W^\circ$, but
+$\omega(x,z)=-\omega(z,x)=-f(x)\ne0$. Thus $x\notin(W^\circ)^\circ$, proving the reverse
+inclusion.
+\end{proof}
+
+\begin{lemma}[Strong finite-codimension parity]\label{lem:strong-codim-parity}
+Let $(X,\omega)$ be a real strong symplectic Banach space, and let $W\subseteq X$ be a closed
+finite-codimensional subspace. Then
+\[
+  \codim_XW\equiv\dim(W\cap W^\circ)\pmod2.
+\]
+\uses{lem:strong-orthogonals,lem:finite-alt-even}
+\end{lemma}
+
+\begin{proof}
+Restrict $\omega$ to the finite-dimensional space $W^\circ$. Its radical is
+$W^\circ\cap(W^\circ)^\circ=W^\circ\cap W$. By
+Lemma~\ref{lem:finite-alt-even}, the radical has the same parity as $\dim W^\circ$, which equals
+$\codim_XW$ by Lemma~\ref{lem:strong-orthogonals}.
+\end{proof}
+
+\begin{lemma}[Closed sums and quotient dimensions]\label{lem:sum-quotient-package}
+Let $E,N\subseteq X$ be real linear subspaces, where $X$ is Banach, $E$ is closed and
+finite-codimensional, and $N$ is finite-dimensional. Let $q_E:X\to X/E$ and
+$q_N:X\to X/N$ be the quotient maps. Then $E+N$ is closed and finite-codimensional,
+$q_N(E+N)$ is closed and finite-codimensional in $X/N$, and there are canonical linear
+isomorphisms
+\[
+ (E+N)/E\simeq N/(E\cap N),\qquad
+ (E+N)/N\simeq E/(E\cap N),
+\]
+\[
+ (X/E)/q_E(E+N)\simeq X/(E+N),\qquad
+ (X/N)/q_N(E+N)\simeq X/(E+N).
+\]
+Consequently,
+\[
+ \codim_XE+\dim(E\cap N)=\codim_X(E+N)+\dim N
+\]
+and
+\[
+ \codim_{X/N}q_N(E+N)=\codim_X(E+N).
+\]
+\uses{lem:quotient-range}
+\end{lemma}
+
+\begin{proof}
+The finite-dimensional subspace $N$ is closed, so all quotients by $N$ below carry their Banach
+quotient topology. The sum of a closed subspace and a finite-dimensional subspace is closed. The
+preimage of $q_N(E+N)$ under $q_N$ is $E+N$, so the quotient-map criterion makes that image closed.
+The first two isomorphisms send a class represented by $e+n$ to the class of $n$, respectively to
+the class of $e$; their kernels are the displayed intersections. Applying the
+quotient-of-a-quotient theorem to the images $q_E(E+N)$ and $q_N(E+N)$ gives the other two
+isomorphisms.
+
+It follows that every space whose dimension occurs below is finite-dimensional.
+Rank--nullity for $N\to X/E$ gives
+\[
+ \dim N=\dim(E\cap N)+\dim((E+N)/E),
+\]
+and quotienting $X/E$ by $(E+N)/E$ gives
+\[
+ \codim_XE=\dim((E+N)/E)+\codim_X(E+N).
+\]
+Combining these identities proves the first formula. The final iterated-quotient isomorphism proves
+the second.
+\end{proof}
+
+\begin{lemma}[Strong quotient of a Fredholm alternating form]
+\label{lem:fredholm-quotient-strong}
+Let $X$ be reflexive and let $\eta$ be a continuous alternating form whose induced operator
+$S_\eta:X\to\strongdual X$ is Fredholm. If $N=\rad\eta$, then $\eta$ descends to a continuous
+strong alternating form $\bar\eta$ on $X/N$.
+\uses{def:weak-form,def:strong-form,lem:skew-fredholm-range,lem:quotient-dual}
+\end{lemma}
+
+\begin{proof}
+The radical $N=\ker S_\eta$ is closed because $S_\eta$ is bounded, so $X/N$ is a Banach space.
+Moreover, if $x\in X$ and $n\in N$, then
+\[
+  (S_\eta x)(n)=\eta(x,n)=-\eta(n,x)=0.
+\]
+Thus $S_\eta$ takes values in $\Ann(N)$. Since $N=\ker S_\eta$, changing the first argument by an
+element of $N$ leaves the form unchanged; alternation gives the same conclusion in the second
+argument. Factor the bounded map $S_\eta:X\to\Ann(N)$ through the quotient map $q_N:X\to X/N$.
+The quotient universal property gives a bounded map
+\[
+  \widetilde S:X/N\longrightarrow\Ann(N),\qquad \widetilde S[x]=S_\eta x.
+\]
+Compose $\widetilde S$ with the inverse of the continuous pullback isomorphism
+$\strongdual{(X/N)}\simeq\Ann(N)$ from Lemma~\ref{lem:quotient-dual}. The resulting bounded map
+$\bar S:X/N\to\strongdual{(X/N)}$ satisfies
+\[
+  (\bar S[x])([y])=\eta(x,y).
+\]
+This identity proves that the descended form is well-defined, continuous, bilinear, and
+alternating. Its kernel is zero because $N$ is exactly $\ker S_\eta$.
+
+Alternation also gives $S_\eta^*\iota_X=-S_\eta$, so
+Lemma~\ref{lem:skew-fredholm-range} applies. For surjectivity, pull a functional on $X/N$ back
+to $\Ann(N)$. By Lemma~\ref{lem:skew-fredholm-range}, it has the form $S_\eta x$ for some
+$x\in X$, and the class $[x]\in X/N$ maps to the original functional.
+Lemma~\ref{lem:quotient-dual} makes every identification continuous. The bounded inverse theorem
+then supplies a continuous inverse, so the quotient form is strong without requiring a complement
+of $N$.
+\end{proof}
+
+\begin{lemma}[Radical and codimension after quotienting]\label{lem:radical-quotient}
+Let $X$ be a real reflexive Banach space and let $\eta$ be a continuous alternating form whose
+induced operator $S_\eta:X\to\strongdual X$ is Fredholm. Put $N=\rad\eta$, let
+$\bar\eta$ be the strong form on $X/N$ supplied by
+Lemma~\ref{lem:fredholm-quotient-strong}, and let $E\subseteq X$ be closed and
+finite-codimensional. Put
+\[
+  R=\rad(\eta|_E),
+  \qquad
+  \bar E=q_N(E+N)\subseteq X/N,
+\]
+where $q_N:X\to X/N$ is the quotient map. Then $\bar E$ is closed and finite-codimensional,
+$R$ is finite-dimensional, and
+\[
+  \rad(\bar\eta|_{\bar E})\simeq R/(E\cap N).
+\]
+Writing $\bar R=\rad(\bar\eta|_{\bar E})$, one has
+\[
+  \dim R=\dim\bar R+\dim(E\cap N)
+\]
+and
+\[
+  \codim_XE+\dim(E\cap N)=\codim_{X/N}\bar E+\dim N.
+\]
+\uses{lem:fredholm-quotient-strong,lem:sum-quotient-package,lem:strong-orthogonals}
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:sum-quotient-package} gives closedness and finite codimension of $\bar E$. A class
+represented by $e+n$ is in the restricted radical precisely when
+$\eta(e,e')=0$ for every $e'\in E$, because $N$ kills both variables. This is exactly the
+condition $e\in R$. Thus the radical is $(R+N)/N$, canonically isomorphic to $R/(E\cap N)$.
+Here $R\cap N=E\cap N$: the inclusion $R\subseteq E$ gives one direction, while every element of
+$E\cap N$ annihilates all of $X$ under $\eta$ and hence belongs to $R$.
+
+Lemma~\ref{lem:strong-orthogonals}, applied to $\bar E$ in the strong quotient space, makes
+$\bar R$ finite-dimensional. Since $E\cap N$ is a subspace of the finite-dimensional Fredholm
+kernel $N$, the short exact sequence
+\[
+  0\longrightarrow E\cap N\longrightarrow R\longrightarrow\bar R\longrightarrow0
+\]
+then makes $R$ finite-dimensional and gives the first additive identity. The second follows by
+combining the two additive codimension identities of Lemma~\ref{lem:sum-quotient-package}.
+\end{proof}
+
+\begin{theorem}[Finite-codimensional parity]\label{thm:finite-codim-parity}
+Let $X$ be a real reflexive Banach space and let $\eta$ be a continuous alternating form whose
+induced operator is Fredholm. Put $N=\rad\eta$. If $E\subseteq X$ is closed and
+finite-codimensional and $R=\rad(\eta|_E)$, then $R$ is finite-dimensional and
+\[
+  \codim_XE\equiv\dim N+\dim R\pmod2.
+\]
+\uses{lem:strong-codim-parity,lem:radical-quotient}
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:strong-codim-parity} to $\bar E$ in the strong symplectic quotient $X/N$.
+Put $K=E\cap N$ and $\bar R=\rad(\bar\eta|_{\bar E})$. Strong-space parity gives
+\[
+  \codim_{X/N}\bar E\equiv\dim\bar R\pmod2.
+\]
+Lemma~\ref{lem:radical-quotient} gives
+\[
+ \codim_XE+\dim K=\codim_{X/N}\bar E+\dim N,
+ \qquad
+ \dim R=\dim\bar R+\dim K.
+\]
+Therefore
+\[
+ \codim_XE\equiv\codim_XE+2\dim K
+ \equiv\dim N+\dim\bar R+\dim K
+ =\dim N+\dim R\pmod2,
+\]
+which proves the result.
+\end{proof}

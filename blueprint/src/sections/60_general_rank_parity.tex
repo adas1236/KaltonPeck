@@ -1,0 +1,76 @@
+\section{The general rank-parity theorem}
+
+\begin{lemma}[Kernel of a finite-rank polynomial]\label{lem:finite-rank-kernel}
+Let $X$ be a real Banach space, let $T:X\to X$ be bounded, and suppose that $F=T^2+I$ has finite
+rank.  Then $E=\ker F$ is closed and finite-codimensional,
+\[
+  \codim_XE=\rank F,
+\]
+$E$ is $T$-invariant, and $T^2=-I$ on $E$.
+\uses{lem:quotient-range,def:fredholm-rank}
+\end{lemma}
+
+\begin{proof}
+The kernel of a continuous map is closed, and Lemma~\ref{lem:quotient-range} gives the codimension
+identity.  Since $T$ commutes with the polynomial $T^2+I$, it preserves its kernel.  The defining
+kernel equation is exactly $T^2x=-x$ for $x\in E$.
+\end{proof}
+
+\begin{lemma}[The auxiliary parity form]\label{lem:rank-parity-form}
+Let $(X,\omega)$ be strong symplectic, let $T$ be bounded, and put $G=I+T^+T$.  Then
+\[
+  \eta(x,y)=\omega(Gx,y)=\omega(x,y)+\omega(Tx,Ty)
+\]
+is a continuous alternating form.  Its induced map is $D\circ G$, its radical is $\ker G$, and it
+is Fredholm whenever $G$ is Fredholm.
+\uses{def:weak-form,def:strong-form,lem:adjoint-calculus,lem:fredholm-calculus}
+\end{lemma}
+
+\begin{proof}
+The adjoint identity gives the second expression, and
+$\eta(x,x)=\omega(x,x)+\omega(Tx,Tx)=0$, so $\eta$ is alternating.  Continuity is inherited from
+$D$ and $G$.  Evaluation gives $S_\eta=D\circ G$.  Since $D$ is injective, the radical is
+$\ker G$; since $D$ is an isomorphism, Lemma~\ref{lem:fredholm-calculus} transports Fredholmness.
+\end{proof}
+
+\begin{lemma}[Even restricted radical]\label{lem:restricted-radical-even}
+Let $(X,\omega)$ be a real strong symplectic Banach space and let $T:X\to X$ be bounded.  Suppose
+$P=T^2+I$ has finite rank, put $E=\ker P$ and $G=I+T^+T$, and let
+$\eta(x,y)=\omega(Gx,y)$.  If $R=\rad(\eta|_E)$ is finite-dimensional, then $R$ is $T$-invariant
+and has even dimension.
+\uses{lem:finite-rank-kernel,lem:rank-parity-form,lem:finite-complex-even}
+\end{lemma}
+
+\begin{proof}
+For $x,y\in E$, direct expansion using $T^2=-I$ gives
+$\eta(Tx,Ty)=\eta(x,y)$.  Replacing $y$ by $Ty$ and again using $T^2y=-y$ gives
+\[
+  \eta(Tx,y)+\eta(x,Ty)=0.
+\]
+If $x\in R$ and $y\in E$, then $Ty\in E$, so the second term vanishes; therefore
+$\eta(Tx,y)=0$ and $Tx\in R$.  On $R$, the operator $T$ still squares to $-I$, so
+Lemma~\ref{lem:finite-complex-even} makes its dimension even.
+\end{proof}
+
+\begin{theorem}[General rank parity]\label{thm:general-rank-parity}
+Let $(X,\omega)$ be a real strong symplectic Banach space and let $T$ be a bounded operator.
+Assume that $I+T^+T$ is Fredholm and that $T^2+I$ has finite rank.  Then
+\[
+  \rank(T^2+I)\equiv\dim\ker(I+T^+T)\pmod2.
+\]
+\uses{lem:finite-rank-kernel,lem:rank-parity-form,thm:finite-codim-parity,lem:restricted-radical-even,lem:strong-reflexive}
+\lean{KaltonPeck.rankParityGeneral}
+\end{theorem}
+
+\begin{proof}
+Set $P=T^2+I$, $E=\ker P$, $G=I+T^+T$, and let $\eta$ be the form from
+Lemma~\ref{lem:rank-parity-form}.  Put $N=\rad\eta=\ker G$ and $R=\rad(\eta|_E)$.
+Lemma~\ref{lem:finite-rank-kernel} gives $\rank P=\codim_XE$.
+Lemma~\ref{lem:strong-reflexive} supplies the reflexivity hypothesis of
+Theorem~\ref{thm:finite-codim-parity}, which makes $R$ finite-dimensional and yields
+\[
+  \rank P\equiv\dim N+\dim R.
+\]
+Lemma~\ref{lem:restricted-radical-even} makes $\dim R$ even, so
+$\rank P\equiv\dim N=\dim\ker G\pmod2$.
+\end{proof}

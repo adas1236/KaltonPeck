@@ -1,0 +1,131 @@
+\section{Kalton--Peck Fredholm rigidity and rank parity}
+
+\begin{lemma}[The even--odd graph operator]\label{lem:even-odd-blocks}
+Let $w_n=e_{2n}$ and $v_n=e_{2n+1}$ in $\ell_2$, and let $R_0,R_1$ be their transported block
+operators on a presented real $Z_2$.  Then
+\[
+  R_0^+R_0=I,
+  \quad R_1^+R_1=I,
+  \quad R_0^+R_1=0,
+  \quad R_1^+R_0=0.
+\]
+For every bounded operator $T$, put $W=R_0+R_1T$.  Then $W$ is bounded,
+\[
+  R_0^+W=I,
+  \qquad
+  W^+W=I+T^+T.
+\]
+In particular, $R_0^+$ is a bounded left inverse of $W$, so $W$ is upper semi-Fredholm.
+\uses{thm:block-transport,def:upper-semi,lem:adjoint-calculus,lem:fredholm-calculus}
+\end{lemma}
+
+\begin{proof}
+The families $(e_{2n})$ and $(e_{2n+1})$ are normalized, internally disjointly supported, and
+mutually support-disjoint.  The transported normalized-block theorem therefore gives all four
+relations.  It also gives boundedness of $R_0$ and $R_1$, hence of $W$.  The first graph identity is
+\[
+  R_0^+W=R_0^+R_0+R_0^+R_1T=I.
+\]
+Adjoint additivity and reversal of composition give
+\[
+  W^+=R_0^++T^+R_1^+.
+\]
+Multiplying and using $R_i^+R_j=\delta_{ij}I$ gives
+\[
+  W^+W
+  =R_0^+R_0+R_0^+R_1T+T^+R_1^+R_0+T^+R_1^+R_1T
+  =I+T^+T.
+\]
+Thus $R_0^+$ is a bounded left inverse.  The closed-range result for an operator with a bounded
+left inverse makes $W$ injective with closed range; its zero kernel is finite-dimensional, so it is
+upper semi-Fredholm.
+\end{proof}
+
+\begin{proposition}[Graph Fredholmness]\label{prop:graph-fredholm}
+For every bounded operator $T$ on a complete real normed space with a Kalton--Peck presentation,
+$I+T^+T$ is Fredholm.
+\uses{lem:even-odd-blocks,thm:cgp-transport}
+\end{proposition}
+
+\begin{proof}
+The operator $W$ from Lemma~\ref{lem:even-odd-blocks} is upper semi-Fredholm.  The transported
+Castillo--Gonz\'alez--Pino theorem therefore makes $W^+W$ Fredholm, and the same lemma identifies
+this operator with $I+T^+T$.
+\end{proof}
+
+\begin{lemma}[The Fredholm alternating path]\label{lem:kp-alternating-path}
+Let $T$ be bounded on a complete presented real $Z_2$, and for $t\in[0,1]$ define
+\[
+  b_t(x,y)=\Omega_X(x,y)+t\Omega_X(Tx,Ty).
+\]
+Then each $b_t$ is a continuous alternating form, the induced operators depend continuously on $t$
+in operator norm, and
+\[
+  S_t=D_X\circ(I+tT^+T).
+\]
+Every $S_t$ is Fredholm.
+\uses{def:weak-form,thm:ks-transport,lem:adjoint-calculus,prop:graph-fredholm,lem:fredholm-calculus}
+\end{lemma}
+
+\begin{proof}
+Each summand is continuous and bilinear.  Moreover
+\[
+  b_t(x,x)=\Omega_X(x,x)+t\Omega_X(Tx,Tx)=0,
+\]
+so $b_t$ is alternating.  The defining equation for the symplectic adjoint gives, for all $x,y$,
+\[
+  (S_tx)(y)=\Omega_X(x,y)+t\Omega_X(Tx,Ty)
+  =\Omega_X((I+tT^+T)x,y),
+\]
+which proves the formula for $S_t$.  For $s,t\in[0,1]$,
+\[
+  \|S_t-S_s\|\leq |t-s|\,\|D_X\|\,\|T^+\|\,\|T\|,
+\]
+so the path is operator-norm continuous.
+
+Thus each $b_t$ is a possibly degenerate continuous alternating form; no strongness assertion is
+made along the path.  Since $t\geq0$, scalar compatibility of the adjoint and $(\sqrt t)^2=t$ give
+\[
+  I+(\sqrt t\,T)^+(\sqrt t\,T)=I+tT^+T.
+\]
+Proposition~\ref{prop:graph-fredholm}, applied to $\sqrt t\,T$, makes the right-hand factor
+Fredholm.  Postcomposition with the bounded linear isomorphism $D_X$ preserves Fredholmness, so
+$S_t$ is Fredholm.
+\end{proof}
+
+\begin{proposition}[Even graph kernel]\label{prop:even-kernel}
+For every bounded operator $T$ on a complete presented real $Z_2$, the Fredholm operator
+$I+T^+T$ has finite, even-dimensional kernel.
+\uses{lem:kp-alternating-path,thm:ks-transport,thm:mod2-path,lem:strong-reflexive,prop:graph-fredholm}
+\end{proposition}
+
+\begin{proof}
+The transported strong form makes the ambient space reflexive by
+Lemma~\ref{lem:strong-reflexive}.  Apply Theorem~\ref{thm:mod2-path} to the path from
+Lemma~\ref{lem:kp-alternating-path}.  At $t=0$, $S_0=D_X$ is invertible and has zero-dimensional
+kernel.  Hence $\dim\ker S_1$ is even.  Since
+\[
+  S_1=D_X\circ(I+T^+T)
+\]
+and $D_X$ is injective, $\ker S_1=\ker(I+T^+T)$.  Finiteness follows from Fredholmness in
+Proposition~\ref{prop:graph-fredholm}.
+\end{proof}
+
+\begin{theorem}[Rank parity on $Z_2$]\label{thm:z2-rank-parity}
+Let $Z_2$ be a complete real normed space with a Kalton--Peck presentation, and let $T$ be a bounded
+operator on $Z_2$.  If $T^2+I$ has finite rank, then
+\[
+  \rank(T^2+I)\text{ is even}.
+\]
+\uses{thm:general-rank-parity,thm:ks-transport,prop:graph-fredholm,prop:even-kernel}
+\lean{KaltonPeck.rankParityZ2}
+\end{theorem}
+
+\begin{proof}
+Use the transported Kalton--Swanson form on $Z_2$.  Proposition~\ref{prop:graph-fredholm} supplies
+the Fredholm hypothesis in Theorem~\ref{thm:general-rank-parity}; hence
+\[
+  \rank(T^2+I)\equiv\dim\ker(I+T^+T)\pmod2.
+\]
+The right-hand side is even by Proposition~\ref{prop:even-kernel}, so the left-hand side is even.
+\end{proof}
