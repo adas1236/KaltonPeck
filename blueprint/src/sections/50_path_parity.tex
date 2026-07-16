@@ -10,6 +10,8 @@ Restriction and the bounded projections give
 with continuous coordinate projections.  Moreover, $\ran S=\Ann(F)$, and the restriction
 $S|_Y:Y\to\Ann(F)$ is a continuous linear isomorphism.
 \uses{def:weak-form,lem:skew-fredholm-range}
+\lean{KaltonPeck.Support.PathParity.KernelSplittingData, KaltonPeck.Support.PathParity.kernelSplitting}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -38,6 +40,7 @@ injective linear map $m_t:F\to X$ and a continuous alternating form $c_t$ on $F$
 \]
 is a linear isomorphism.
 \uses{def:weak-form,lem:kernel-splitting}
+\lean{KaltonPeck.Support.PathParity.LocalSchurPointData, KaltonPeck.Support.PathParity.localSchurReduction}
 \end{lemma}
 
 \begin{proof}
@@ -81,6 +84,7 @@ Let $X$ be a real reflexive Banach space and let $b_t$, $0\leq t\leq1$, be conti
 forms whose induced operators $S_t:X\to\strongdual X$ depend continuously on $t$ in operator
 norm.  If each $S_t$ is Fredholm, then $\dim\ker S_t$ is independent of $t$ modulo $2$.
 \uses{lem:schur-reduction,lem:finite-alt-even}
+\lean{KaltonPeck.Support.PathParity.mod2Path}
 \end{theorem}
 
 \begin{proof}

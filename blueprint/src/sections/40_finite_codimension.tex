@@ -9,6 +9,7 @@ Then $W^\circ$ is finite-dimensional,
   (W^\circ)^\circ=W.
 \]
 \uses{def:strong-form,lem:double-annihilator,lem:quotient-dual}
+\lean{KaltonPeck.Support.FiniteCodim.strongOrthogonals}
 \end{lemma}
 
 \begin{proof}
@@ -30,6 +31,7 @@ finite-codimensional subspace. Then
   \codim_XW\equiv\dim(W\cap W^\circ)\pmod2.
 \]
 \uses{lem:strong-orthogonals,lem:finite-alt-even}
+\lean{KaltonPeck.Support.FiniteCodim.strongCodimParity}
 \end{lemma}
 
 \begin{proof}
@@ -62,6 +64,8 @@ and
  \codim_{X/N}q_N(E+N)=\codim_X(E+N).
 \]
 \uses{lem:quotient-range}
+\lean{KaltonPeck.Support.FiniteCodim.SumQuotientData, KaltonPeck.Support.FiniteCodim.sumQuotientPackage}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -92,6 +96,7 @@ Let $X$ be reflexive and let $\eta$ be a continuous alternating form whose induc
 $S_\eta:X\to\strongdual X$ is Fredholm. If $N=\rad\eta$, then $\eta$ descends to a continuous
 strong alternating form $\bar\eta$ on $X/N$.
 \uses{def:weak-form,def:strong-form,lem:skew-fredholm-range,lem:quotient-dual}
+\lean{KaltonPeck.Support.FiniteCodim.FredholmQuotientStrongData, KaltonPeck.Support.FiniteCodim.fredholmQuotientStrong}
 \end{lemma}
 
 \begin{proof}
@@ -150,6 +155,7 @@ and
   \codim_XE+\dim(E\cap N)=\codim_{X/N}\bar E+\dim N.
 \]
 \uses{lem:fredholm-quotient-strong,lem:sum-quotient-package,lem:strong-orthogonals}
+\lean{KaltonPeck.Support.FiniteCodim.RadicalQuotientData, KaltonPeck.Support.FiniteCodim.radicalQuotient}
 \end{lemma}
 
 \begin{proof}
@@ -178,6 +184,7 @@ finite-codimensional and $R=\rad(\eta|_E)$, then $R$ is finite-dimensional and
   \codim_XE\equiv\dim N+\dim R\pmod2.
 \]
 \uses{lem:strong-codim-parity,lem:radical-quotient}
+\lean{KaltonPeck.Support.FiniteCodim.finiteCodimParity}
 \end{theorem}
 
 \begin{proof}

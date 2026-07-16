@@ -1,6 +1,14 @@
-import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Analysis.Normed.Operator.NormedSpace
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import KaltonPeck.Support.Definitions
+import KaltonPeck.Support.Forms
+import KaltonPeck.Support.Fredholm
+import KaltonPeck.Support.FiniteParity
+import KaltonPeck.Support.FiniteCodim
+import KaltonPeck.Support.PathParity
+import KaltonPeck.Support.GeneralRank
+import KaltonPeck.Support.Coordinates
+import KaltonPeck.Support.Symplectic
+import KaltonPeck.Support.GraphFredholm
+import KaltonPeck.Support.TargetSupport
 
 namespace KaltonPeck
 

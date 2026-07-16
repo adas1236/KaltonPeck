@@ -12,6 +12,7 @@ and
   \codim_X\ker A=\dim\ran A=\rank A.
 \]
 \uses{def:fredholm-rank}
+\lean{KaltonPeck.Support.Fredholm.quotientKernelRangeEquiv, KaltonPeck.Support.Fredholm.quotientKernelRangeEquiv_apply_mk, KaltonPeck.Support.Fredholm.quotientKernelRange}
 \end{lemma}
 
 \begin{proof}
@@ -30,6 +31,7 @@ Then
 \[
   W=\{x\in X:f(x)=0\text{ for every }f\in\Ann(W)\}.
 \]
+\lean{KaltonPeck.Support.Forms.continuousAnnihilator, KaltonPeck.Support.Forms.continuousDoubleAnnihilator}
 \end{lemma}
 
 \begin{proof}
@@ -48,6 +50,7 @@ continuous linear isomorphism
   \strongdual{(X/W)}\simeq\Ann(W),
   \qquad \varphi\longmapsto\varphi\circ q.
 \]
+\lean{KaltonPeck.Support.Forms.quotientDualEquivAnnihilator, KaltonPeck.Support.Forms.quotientDualEquivAnnihilator_apply}
 \end{lemma}
 
 \begin{proof}
@@ -61,6 +64,7 @@ pullback to a continuous linear isomorphism.
 \begin{lemma}[Strong symplectic spaces are reflexive]\label{lem:strong-reflexive}
 Every strong symplectic Banach space is reflexive.
 \uses{def:strong-form,def:transpose-adjoint}
+\lean{KaltonPeck.Support.Forms.strongSymplecticTransposeInclusion, KaltonPeck.Support.Forms.strongSymplecticReflexive}
 \end{lemma}
 
 \begin{proof}
@@ -85,6 +89,7 @@ For bounded operators $A,B$ on a strong symplectic Banach space and $a\in\R$,
  \omega(A^+x,y)=\omega(x,Ay).
 \]
 \uses{def:transpose-adjoint,lem:strong-reflexive}
+\lean{KaltonPeck.Support.Forms.adjoint_one, KaltonPeck.Support.Forms.adjoint_add, KaltonPeck.Support.Forms.adjoint_smul, KaltonPeck.Support.Forms.adjoint_mul, KaltonPeck.Support.Forms.adjoint_involutive, KaltonPeck.Support.Forms.adjoint_apply}
 \end{lemma}
 
 \begin{proof}
@@ -114,6 +119,7 @@ $A:X\to Y$ and $C:Y\to Z$ are bounded and $C$ is injective, then
 closed; hence it has finite-dimensional kernel and closed range.
 \end{enumerate}
 \uses{def:fredholm-rank}
+\lean{KaltonPeck.Support.Fredholm.isFredholm_equiv_comp, KaltonPeck.Support.Fredholm.kernelEquivOfEquivComp, KaltonPeck.Support.Fredholm.cokernelEquivOfEquivComp, KaltonPeck.Support.Fredholm.nullity_equiv_comp, KaltonPeck.Support.Fredholm.cokernelFinrank_equiv_comp, KaltonPeck.Support.Fredholm.fredholmIndex_equiv_comp, KaltonPeck.Support.Fredholm.fredholm_smul, KaltonPeck.Support.Fredholm.ker_comp_of_injective, KaltonPeck.Support.Fredholm.isFredholm_comp, KaltonPeck.Support.Fredholm.fredholmIndex_comp, KaltonPeck.Support.Fredholm.leftInverseKernelRange}
 \end{lemma}
 
 \begin{proof}
@@ -161,6 +167,7 @@ $N=\ker S$, then $S$ has Fredholm index zero and
   \ran S=\Ann(N).
 \]
 \uses{def:transpose-adjoint,def:fredholm-rank,lem:double-annihilator,lem:quotient-dual}
+\lean{KaltonPeck.Support.Fredholm.skewFredholmRange}
 \end{lemma}
 
 \begin{proof}
@@ -188,6 +195,7 @@ $V\to V^*$ has even rank. Consequently,
 \[
   \dim\rad c\equiv\dim V\pmod2.
 \]
+\lean{KaltonPeck.Support.FiniteParity.finiteAlternatingRankEven, KaltonPeck.Support.FiniteParity.finiteContinuousAlternatingRankEven}
 \end{lemma}
 
 \begin{proof}
@@ -210,6 +218,7 @@ rank is even, and rank--nullity gives the congruence.
 \begin{lemma}[Finite complex structures have even dimension]\label{lem:finite-complex-even}
 If a finite-dimensional real vector space $V$ has an endomorphism $J$ with $J^2=-I$, then
 $\dim_{\R} V$ is even.
+\lean{KaltonPeck.Support.FiniteParity.finiteComplexDimensionEven, KaltonPeck.Support.FiniteParity.finiteContinuousComplexDimensionEven, KaltonPeck.Support.FiniteParity.finiteInvariantSubmoduleComplexDimensionEven}
 \end{lemma}
 
 \begin{proof}

@@ -25,7 +25,8 @@ whose range is exactly the admissible pairs, together with constants $c,C>0$ suc
   c\,q(\kappa_Zz)\leq\|z\|\leq C\,q(\kappa_Zz)
   \qquad(z\in Z).
 \]
-\lean{KaltonPeck.IsSquareSummable,KaltonPeck.l2Norm,KaltonPeck.centralizer,KaltonPeck.IsAdmissiblePair,KaltonPeck.kaltonPeckQuasiNorm,KaltonPeck.RealKaltonPeckPresentation}\leanok
+\lean{KaltonPeck.IsSquareSummable, KaltonPeck.Support.IsSquareSummable, KaltonPeck.l2Norm, KaltonPeck.Support.l2Norm, KaltonPeck.centralizer, KaltonPeck.Support.centralizer, KaltonPeck.IsAdmissiblePair, KaltonPeck.Support.IsAdmissiblePair, KaltonPeck.kaltonPeckQuasiNorm, KaltonPeck.Support.kaltonPeckQuasiNorm, KaltonPeck.RealKaltonPeckPresentation, KaltonPeck.Support.RealKaltonPeckPresentation}
+\leanok
 \end{definition}
 
 \begin{lemma}[Normalization equivalence for the canonical model]
@@ -62,6 +63,7 @@ and consequently
   \frac12q(u,x)\leq q_0(e_0(u,x))\leq q(u,x).
 \]
 \uses{def:kp-presentation}
+\lean{KaltonPeck.Support.Coordinates.k0Centralizer, KaltonPeck.Support.Coordinates.IsBoundedSequence, KaltonPeck.Support.Coordinates.IsK0AdmissiblePair, KaltonPeck.Support.Coordinates.k0QuasiNorm, KaltonPeck.Support.Coordinates.normalizationEquiv, KaltonPeck.Support.Coordinates.kpNormalization}
 \end{lemma}
 
 \begin{proof}
@@ -94,6 +96,7 @@ Consequently there exists a complete real normed space $Z_2^{\mathrm{can}}$ whos
 a Kalton--Peck presentation.  In this model, the finite-coordinate pairs are dense.  Fix one such
 presented space for the remainder of the blueprint.
 \uses{def:kp-presentation,lem:kp-normalization}
+\lean{KaltonPeck.Support.Coordinates.IsFiniteCoordinatePair, KaltonPeck.Support.Coordinates.CanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedAddCommGroupCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instCompleteSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.canonicalRealKaltonPeckPresentation, KaltonPeck.Support.Coordinates.canonicalKaltonPeckBanach}
 \end{theorem}
 
 \begin{proof}
@@ -123,6 +126,7 @@ If $a_X,b_X,a_Y,b_Y>0$ are comparison constants for the two presentations, then
   \|e^{-1}y\|\leq \frac{b_X}{a_Y}\|y\|.
 \]
 \uses{def:kp-presentation}
+\lean{KaltonPeck.Support.Coordinates.AreComparisonConstants, KaltonPeck.Support.Coordinates.presentationEquiv, KaltonPeck.Support.Coordinates.presentationEquiv_spec}
 \end{theorem}
 
 \begin{proof}
@@ -166,6 +170,7 @@ Its induced map is
 \]
 where $e_0^*f=f\circ e_0$.  Hence $\Omega_{\mathrm{can}}$ is a continuous strong alternating form.
 \uses{thm:kp-canonical-banach,lem:kp-normalization,def:strong-form}
+\lean{KaltonPeck.Support.Symplectic.standardBasisSequence, KaltonPeck.Support.Symplectic.canonicalFirstBasisVector, KaltonPeck.Support.Symplectic.canonicalSecondBasisVector, KaltonPeck.Support.Symplectic.canonicalBasisCoordinates, KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm, KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm_finite_coordinates}
 \end{theorem}
 
 \begin{proof}
@@ -193,6 +198,7 @@ induced isomorphism is
   D_X=e^*\circ D_{\mathrm{can}}\circ e:X\longrightarrow\strongdual X.
 \]
 \uses{thm:ks-primary,thm:presentation-equivalence,def:strong-form}
+\lean{KaltonPeck.Support.Symplectic.transportedKaltonSwansonForm, KaltonPeck.Support.Symplectic.transportedKaltonSwansonForm_apply}
 \end{theorem}
 
 \begin{proof}
@@ -238,6 +244,7 @@ disjoint from all supports of the $w_n$, then
   W_w^+W_v=0=W_v^+W_w.
 \]
 \uses{thm:kp-canonical-banach,lem:kp-normalization,thm:ks-primary}
+\lean{KaltonPeck.Support.Symplectic.IsSuccessiveNormalizedBlockSequence, KaltonPeck.Support.Symplectic.AreMutuallySupportDisjoint, KaltonPeck.Support.Symplectic.canonicalBlockOperator, KaltonPeck.Support.Symplectic.canonicalNormalizedBlock}
 \end{theorem}
 
 \begin{proof}
@@ -297,6 +304,7 @@ successive normalized block sequence $(v_n)$ mutually support-disjoint from $(w_
   =\widetilde W_v^+\widetilde W_w.
 \]
 \uses{thm:block-primary,thm:presentation-equivalence,thm:ks-transport}
+\lean{KaltonPeck.Support.Symplectic.transportedBlockOperator, KaltonPeck.Support.Symplectic.transportedNormalizedBlock}
 \end{theorem}
 
 \begin{proof}
@@ -314,12 +322,15 @@ identities from Theorem~\ref{thm:block-primary}.
 A bounded operator is \emph{upper semi-Fredholm} when its kernel is finite-dimensional and its
 range is closed.
 \uses{def:fredholm-rank}
+\lean{KaltonPeck.Support.GraphFredholm.IsUpperSemiFredholm}
+\leanok
 \end{definition}
 
 \begin{theorem}[Canonical Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-primary}
 On $Z_2^{\mathrm{can}}$ with the canonical Kalton--Swanson form, let $A$ be a bounded operator.  If
 $\ker A$ is finite-dimensional and $\ran A$ is closed, then $A^+A$ is Fredholm.
 \uses{thm:ks-primary,def:upper-semi,def:fredholm-rank}
+\lean{KaltonPeck.Support.GraphFredholm.cgpPrimary}
 \end{theorem}
 
 \begin{proof}
@@ -331,6 +342,7 @@ Let $X$ be a complete real normed space with a Kalton--Peck presentation and its
 Kalton--Swanson form.  If a bounded operator $A$ on $X$ is upper semi-Fredholm, then $A^+A$ is
 Fredholm.
 \uses{thm:cgp-primary,thm:presentation-equivalence,thm:ks-transport,lem:fredholm-calculus,lem:adjoint-calculus}
+\lean{KaltonPeck.Support.GraphFredholm.cgpTransport}
 \end{theorem}
 
 \begin{proof}

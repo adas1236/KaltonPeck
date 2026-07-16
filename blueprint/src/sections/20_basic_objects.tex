@@ -13,6 +13,7 @@ For a subspace $E\subseteq X$, define
   \qquad
   \rad(b|_E)=E\cap E^{\circ_b}.
 \]
+\lean{KaltonPeck.Support.ContinuousAlternatingForm, KaltonPeck.Support.ContinuousAlternatingForm.orthogonal, KaltonPeck.Support.ContinuousAlternatingForm.radical, KaltonPeck.Support.ContinuousAlternatingForm.radical_eq_ker, KaltonPeck.Support.ContinuousAlternatingForm.radical_isClosed, KaltonPeck.Support.ContinuousAlternatingForm.restrict, KaltonPeck.Support.ContinuousAlternatingForm.restrictedRadical, KaltonPeck.Support.StrongSymplecticForm.toContinuousAlternatingForm}
 \end{definition}
 
 \begin{definition}[Strong symplectic form]\label{def:strong-form}
@@ -20,7 +21,8 @@ A continuous alternating form $\omega$ on a real normed space $X$ is \emph{stron
 $D=S_\omega:X\to\strongdual X$ is a continuous linear isomorphism. A Banach space equipped with
 such a form is called a strong symplectic Banach space.
 \uses{def:weak-form}
-\lean{KaltonPeck.StrongSymplecticForm}\leanok
+\lean{KaltonPeck.StrongSymplecticForm, KaltonPeck.Support.StrongSymplecticForm}
+\leanok
 \end{definition}
 
 \begin{definition}[Transpose and symplectic adjoint]\label{def:transpose-adjoint}
@@ -32,7 +34,8 @@ induced isomorphism $D$ and $A:X\to X$ is a bounded endomorphism, define
 \]
 Equivalently, $\omega(A^+x,y)=\omega(x,Ay)$ for all $x,y\in X$.
 \uses{def:strong-form}
-\lean{KaltonPeck.transpose,KaltonPeck.StrongSymplecticForm.adjoint}\leanok
+\lean{KaltonPeck.transpose, KaltonPeck.Support.transpose, KaltonPeck.StrongSymplecticForm.adjoint, KaltonPeck.Support.StrongSymplecticForm.adjoint}
+\leanok
 \end{definition}
 
 \begin{definition}[Fredholmness, rank, and nullity]\label{def:fredholm-rank}
@@ -46,12 +49,14 @@ $\ran A$ is finite-dimensional. In the respective finite-dimensional situations,
   \qquad
   \operatorname{ind}A=\dim\ker A-\dim(Y/\ran A)\in\mathbb Z.
 \]
-\lean{KaltonPeck.IsFredholm,KaltonPeck.HasFiniteRank,KaltonPeck.operatorRank,KaltonPeck.nullity}\leanok
+\lean{KaltonPeck.IsFredholm, KaltonPeck.Support.IsFredholm, KaltonPeck.HasFiniteRank, KaltonPeck.Support.HasFiniteRank, KaltonPeck.operatorRank, KaltonPeck.Support.operatorRank, KaltonPeck.nullity, KaltonPeck.Support.nullity, KaltonPeck.Support.fredholmIndex}
+\leanok
 \end{definition}
 
 \begin{definition}[Complex structures and hyperplanes]\label{def:complex-hyperplane}
 A \emph{complex structure} on a real Banach space $X$ is a bounded operator $J:X\to X$ satisfying
 $J^2=-I$. A \emph{hyperplane} is a closed linear subspace $H\subseteq X$ with
 $\dim(X/H)=1$.
-\lean{KaltonPeck.IsComplexStructure,KaltonPeck.IsHyperplane}\leanok
+\lean{KaltonPeck.IsComplexStructure, KaltonPeck.Support.IsComplexStructure, KaltonPeck.IsHyperplane, KaltonPeck.Support.IsHyperplane}
+\leanok
 \end{definition}

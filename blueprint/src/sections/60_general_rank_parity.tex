@@ -8,6 +8,7 @@ rank.  Then $E=\ker F$ is closed and finite-codimensional,
 \]
 $E$ is $T$-invariant, and $T^2=-I$ on $E$.
 \uses{lem:quotient-range,def:fredholm-rank}
+\lean{KaltonPeck.Support.GeneralRank.finiteRankPolynomialKernel}
 \end{lemma}
 
 \begin{proof}
@@ -24,6 +25,8 @@ Let $(X,\omega)$ be strong symplectic, let $T$ be bounded, and put $G=I+T^+T$.  
 is a continuous alternating form.  Its induced map is $D\circ G$, its radical is $\ker G$, and it
 is Fredholm whenever $G$ is Fredholm.
 \uses{def:weak-form,def:strong-form,lem:adjoint-calculus,lem:fredholm-calculus}
+\lean{KaltonPeck.Support.GeneralRank.RankParityFormData, KaltonPeck.Support.GeneralRank.rankParityForm}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -39,6 +42,7 @@ $P=T^2+I$ has finite rank, put $E=\ker P$ and $G=I+T^+T$, and let
 $\eta(x,y)=\omega(Gx,y)$.  If $R=\rad(\eta|_E)$ is finite-dimensional, then $R$ is $T$-invariant
 and has even dimension.
 \uses{lem:finite-rank-kernel,lem:rank-parity-form,lem:finite-complex-even}
+\lean{KaltonPeck.Support.GeneralRank.restrictedRadicalEven}
 \end{lemma}
 
 \begin{proof}

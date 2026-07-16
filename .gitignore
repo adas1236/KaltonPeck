@@ -18,3 +18,5 @@ blueprint/**/*.synctex.gz
 
 .agents
 .codex
+
+paper.tex
