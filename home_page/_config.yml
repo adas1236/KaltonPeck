@@ -22,10 +22,10 @@ title: KaltonPeck
 #email: your-email@example.com
 description: by adas1236
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://adas1236.github.io/KaltonPeck" # the base hostname & protocol for your site
 twitter_username:
-github_username: 
-repository: /
+github_username: adas1236
+repository: adas1236/KaltonPeck
 
 # Build settings
 remote_theme: pages-themes/cayman@v0.2.0 

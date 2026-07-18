@@ -106,7 +106,187 @@ lemma kpNormalization :
             (1 / 2 : ℝ) * l2Norm (p.1 - centralizer p.2) + l2Norm p.2 ∧
           (1 / 2 : ℝ) * kaltonPeckQuasiNorm p ≤ k0QuasiNorm (normalizationEquiv p) ∧
             k0QuasiNorm (normalizationEquiv p) ≤ kaltonPeckQuasiNorm p := by
-  sorry
+  have coordinate_le (x : ℕ → ℝ) (hx : IsSquareSummable x) (n : ℕ) :
+      |x n| ≤ l2Norm x := by
+    have hterm : x n ^ 2 ≤ ∑' k, x k ^ 2 := by
+      simpa using hx.sum_le_tsum {n} (fun k _ ↦ sq_nonneg (x k))
+    have hsum : 0 ≤ ∑' k, x k ^ 2 :=
+      (sq_nonneg (x n)).trans hterm
+    rw [l2Norm]
+    exact (Real.le_sqrt (abs_nonneg _) hsum).2 (by simpa [sq_abs] using hterm)
+  have squareSummable_bounded (x : ℕ → ℝ) (hx : IsSquareSummable x) :
+      IsBoundedSequence x :=
+    ⟨l2Norm x, coordinate_le x hx⟩
+  have bounded_add {x y : ℕ → ℝ}
+      (hx : IsBoundedSequence x) (hy : IsBoundedSequence y) :
+      IsBoundedSequence (x + y) := by
+    obtain ⟨Cx, hx⟩ := hx
+    obtain ⟨Cy, hy⟩ := hy
+    refine ⟨Cx + Cy, fun n ↦ ?_⟩
+    exact (abs_add_le (x n) (y n)).trans (add_le_add (hx n) (hy n))
+  have bounded_smul (a : ℝ) {x : ℕ → ℝ} (hx : IsBoundedSequence x) :
+      IsBoundedSequence (a • x) := by
+    obtain ⟨C, hx⟩ := hx
+    refine ⟨|a| * C, fun n ↦ ?_⟩
+    simp only [Pi.smul_apply, smul_eq_mul, abs_mul]
+    exact mul_le_mul_of_nonneg_left (hx n) (abs_nonneg a)
+  have squareSummable_smul (a : ℝ) {x : ℕ → ℝ} (hx : IsSquareSummable x) :
+      IsSquareSummable (a • x) := by
+    rw [IsSquareSummable]
+    have h := hx.mul_left (a ^ 2)
+    exact h.congr (fun n ↦ by
+      simp only [Pi.smul_apply]
+      ring)
+  have l2Norm_smul_nonneg (a : ℝ) (ha : 0 ≤ a) (x : ℕ → ℝ)
+      (hx : IsSquareSummable x) :
+      l2Norm (a • x) = a * l2Norm x := by
+    have htsum :
+        (∑' n, (a * x n) ^ 2) = a ^ 2 * ∑' n, x n ^ 2 := by
+      have h := hx.tsum_mul_left (a ^ 2)
+      rw [← h]
+      congr 1
+      funext n
+      ring
+    rw [l2Norm, l2Norm]
+    simp only [Pi.smul_apply, smul_eq_mul, htsum]
+    rw [Real.sqrt_mul (sq_nonneg a), Real.sqrt_sq_eq_abs, abs_of_nonneg ha]
+  have entropy_bound {r : ℝ} (hr : 0 < r) (hr1 : r ≤ 1) :
+      |r * Real.log r| ≤ 1 / Real.exp 1 := by
+    have he : 0 < Real.exp 1 := Real.exp_pos 1
+    have hbase := Real.log_le_sub_one_of_pos
+      (show 0 < 1 / (Real.exp 1 * r) by positivity)
+    have hlog : Real.log (1 / (Real.exp 1 * r)) = -1 - Real.log r := by
+      rw [Real.log_div one_ne_zero (mul_ne_zero he.ne' hr.ne'),
+        Real.log_one, Real.log_mul he.ne' hr.ne', Real.log_exp]
+      ring
+    rw [hlog] at hbase
+    have hneg : -Real.log r ≤ 1 / (Real.exp 1 * r) := by linarith
+    have hmul := mul_le_mul_of_nonneg_left hneg hr.le
+    have hcalc : r * (1 / (Real.exp 1 * r)) = 1 / Real.exp 1 := by
+      field_simp
+    have hlog_nonpos : Real.log r ≤ 0 := Real.log_nonpos hr.le hr1
+    rw [abs_of_nonpos (mul_nonpos_of_nonneg_of_nonpos hr.le hlog_nonpos)]
+    rw [hcalc] at hmul
+    nlinarith
+  have hk0 (x : ℕ → ℝ) (hx : IsSquareSummable x) :
+      IsBoundedSequence (k0Centralizer x) ∧
+        ∀ n, |k0Centralizer x n| ≤ l2Norm x / Real.exp 1 := by
+    have hnorm_nonneg : 0 ≤ l2Norm x := Real.sqrt_nonneg _
+    by_cases hx0 : x = 0
+    · subst x
+      constructor
+      · refine ⟨0, fun n ↦ ?_⟩
+        simp [k0Centralizer]
+      · intro n
+        simp [k0Centralizer, l2Norm]
+    have hnorm_ne : l2Norm x ≠ 0 := by
+      intro hzero
+      apply hx0
+      funext n
+      have hn := coordinate_le x hx n
+      rw [hzero] at hn
+      exact abs_eq_zero.mp (le_antisymm hn (abs_nonneg _))
+    have hnorm_pos : 0 < l2Norm x :=
+      lt_of_le_of_ne hnorm_nonneg (Ne.symm hnorm_ne)
+    have hbound (n : ℕ) :
+        |k0Centralizer x n| ≤ l2Norm x / Real.exp 1 := by
+      by_cases hn0 : x n = 0
+      · rw [k0Centralizer, hn0]
+        simp only [zero_mul, abs_zero]
+        exact div_nonneg hnorm_nonneg (Real.exp_pos 1).le
+      let r : ℝ := |x n| / l2Norm x
+      have hr : 0 < r := div_pos (abs_pos.mpr hn0) hnorm_pos
+      have hr1 : r ≤ 1 :=
+        (div_le_one hnorm_pos).2 (coordinate_le x hx n)
+      have hentropy := entropy_bound hr hr1
+      have hrewrite :
+          |k0Centralizer x n| = l2Norm x * |r * Real.log r| := by
+        rw [k0Centralizer, abs_mul, abs_mul]
+        change |x n| * |Real.log r| = _
+        rw [abs_of_pos hr]
+        have hrdef : l2Norm x * r = |x n| := by
+          dsimp only [r]
+          field_simp
+        rw [← hrdef]
+        ring
+      rw [hrewrite]
+      have := mul_le_mul_of_nonneg_left hentropy hnorm_nonneg
+      simpa [div_eq_mul_inv] using this
+    exact ⟨⟨l2Norm x / Real.exp 1, hbound⟩, hbound⟩
+  have hcentral (x : ℕ → ℝ) (hx : IsSquareSummable x) :
+      centralizer x = 2 • k0Centralizer x := by
+    funext n
+    simp [centralizer, k0Centralizer]
+    ring
+  refine ⟨hk0, hcentral, ?_, ?_, ?_, ?_⟩
+  · intro p
+    rfl
+  · intro p
+    rfl
+  · intro p
+    constructor
+    · intro hp
+      rcases hp with ⟨hx, hdefect⟩
+      have hcent := hcentral p.2 hx
+      have hfirst :
+          (fun n ↦ p.1 n / 2) =
+            (1 / 2 : ℝ) • (p.1 - centralizer p.2) + k0Centralizer p.2 := by
+        funext n
+        change p.1 n / 2 =
+          (1 / 2 : ℝ) * (p.1 n - centralizer p.2 n) + k0Centralizer p.2 n
+        rw [congrFun hcent n]
+        simp only [Pi.smul_apply]
+        ring
+      have hfirst_bounded : IsBoundedSequence (fun n ↦ p.1 n / 2) := by
+        rw [hfirst]
+        exact bounded_add (bounded_smul (1 / 2) (squareSummable_bounded _ hdefect))
+          (hk0 p.2 hx).1
+      refine ⟨hfirst_bounded, hx, ?_⟩
+      have hscaled := squareSummable_smul (1 / 2 : ℝ) hdefect
+      convert hscaled using 1
+      funext n
+      change p.1 n / 2 - k0Centralizer p.2 n =
+        (1 / 2 : ℝ) * (p.1 n - centralizer p.2 n)
+      rw [congrFun hcent n]
+      simp only [Pi.smul_apply]
+      ring
+    · intro hp
+      rcases hp with ⟨_, hx, hdefect⟩
+      refine ⟨hx, ?_⟩
+      have hcent := hcentral p.2 hx
+      have hscaled := squareSummable_smul (2 : ℝ) hdefect
+      convert hscaled using 1
+      funext n
+      change p.1 n - centralizer p.2 n =
+        2 * (p.1 n / 2 - k0Centralizer p.2 n)
+      rw [congrFun hcent n]
+      simp only [Pi.smul_apply]
+      ring
+  · intro p hp
+    have hcent := hcentral p.2 hp.1
+    have hseq :
+        (normalizationEquiv p).1 - k0Centralizer (normalizationEquiv p).2 =
+          (1 / 2 : ℝ) • (p.1 - centralizer p.2) := by
+      funext n
+      change p.1 n / 2 - k0Centralizer p.2 n =
+        (1 / 2 : ℝ) * (p.1 n - centralizer p.2 n)
+      rw [congrFun hcent n]
+      simp only [Pi.smul_apply]
+      ring
+    have hnorm := l2Norm_smul_nonneg (1 / 2 : ℝ) (by norm_num)
+      (p.1 - centralizer p.2) hp.2
+    have hexact :
+        k0QuasiNorm (normalizationEquiv p) =
+          (1 / 2 : ℝ) * l2Norm (p.1 - centralizer p.2) + l2Norm p.2 := by
+      rw [k0QuasiNorm, hseq, hnorm]
+      rfl
+    have hA : 0 ≤ l2Norm (p.1 - centralizer p.2) := Real.sqrt_nonneg _
+    have hB : 0 ≤ l2Norm p.2 := Real.sqrt_nonneg _
+    refine ⟨hexact, ?_, ?_⟩
+    · rw [hexact, kaltonPeckQuasiNorm]
+      nlinarith
+    · rw [hexact, kaltonPeckQuasiNorm]
+      nlinarith
 
 /-- Both coordinates of a pair have finite support.
 Support definition for blueprint label `thm:kp-canonical-banach`. -/
@@ -1165,6 +1345,52 @@ def canonicalRealKaltonPeckPresentation :
     RealKaltonPeckPresentation CanonicalRealKaltonPeck := by
   exact rawPresentation
 
+/-- The real Hilbert sequence space in the canonical Kalton--Peck exact sequence.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+abbrev CanonicalL2 := lp (fun _ : ℕ ↦ ℝ) 2
+
+/-- The canonical quotient `Z₂ → ℓ₂`, given by the second coordinate.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+def canonicalL2Quotient : CanonicalRealKaltonPeck →L[ℝ] CanonicalL2 := by
+  exact secondCLM
+
+/-- The canonical quotient is evaluation of the second Kalton--Peck coordinate.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2Quotient_apply (z : CanonicalRealKaltonPeck) (n : ℕ) :
+    canonicalL2Quotient z n =
+      (canonicalRealKaltonPeckPresentation.coordinates z).2 n := by
+  rfl
+
+/-- The canonical second-coordinate quotient is onto.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2Quotient_surjective :
+    Function.Surjective canonicalL2Quotient := by
+  intro x
+  exact ⟨canonicalSection x, secondCLM_section x⟩
+
+/-- The Hilbert space in the canonical exact sequence is infinite-dimensional.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2_not_finiteDimensional :
+    ¬ FiniteDimensional ℝ CanonicalL2 := by
+  intro h
+  letI : FiniteDimensional ℝ CanonicalL2 := h
+  have hlinear :
+      LinearIndependent ℝ
+        (fun i : ℕ ↦ (lp.single 2 i (1 : ℝ) : CanonicalL2)) := by
+    rw [linearIndependent_iff']
+    intro s g hg i hi
+    have hgi := congrArg (fun x : CanonicalL2 ↦ x i) hg
+    simp only [lp.coeFn_sum, Finset.sum_apply, lp.coeFn_smul, Pi.smul_apply,
+      lp.single_apply, lp.coeFn_zero, Pi.zero_apply] at hgi
+    rw [Finset.sum_eq_single i] at hgi
+    · simpa using hgi
+    · intro j hj hji
+      simp [hji]
+    · exact fun hni ↦ (hni hi).elim
+  have hcard := hlinear.lt_aleph0_of_finiteDimensional
+  rw [Cardinal.mk_nat] at hcard
+  exact (lt_irrefl Cardinal.aleph0) hcard
+
 /-- The canonical Banach model has the exact admissible range and dense finite-coordinate vectors.
 Blueprint label: `thm:kp-canonical-banach`; audit IDs `EXT-KP-CANONICAL-BANACH` and
 `INF-KP-CANONICAL-MODEL`. -/
@@ -1174,7 +1400,140 @@ theorem canonicalKaltonPeckBanach :
       (∀ (a : ℝ) p, IsAdmissiblePair p → IsAdmissiblePair (a • p)) ∧
       Dense {z : CanonicalRealKaltonPeck |
         IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates z)} := by
-  sorry
+  refine ⟨admissible_zero, ?_, ?_, ?_⟩
+  · intro p q hp hq
+    exact admissible_add hp hq
+  · intro a p hp
+    exact admissible_smul a hp
+  · let D : Submodule ℝ Raw :=
+      { carrier := {p | IsFiniteCoordinatePair p.1}
+        zero_mem' := by
+          change Set.Finite {n | (0 : ℝ) ≠ 0} ∧ Set.Finite {n | (0 : ℝ) ≠ 0}
+          exact ⟨by simp, by simp⟩
+        add_mem' := by
+          intro p q hp hq
+          change Set.Finite {n | p.1.1 n + q.1.1 n ≠ 0} ∧
+            Set.Finite {n | p.1.2 n + q.1.2 n ≠ 0}
+          change Set.Finite {n | p.1.1 n ≠ 0} ∧ Set.Finite {n | p.1.2 n ≠ 0} at hp
+          change Set.Finite {n | q.1.1 n ≠ 0} ∧ Set.Finite {n | q.1.2 n ≠ 0} at hq
+          constructor
+          · exact (hp.1.union hq.1).subset fun n hn ↦ by
+              simp only [Set.mem_union, Set.mem_setOf_eq]
+              by_cases hp0 : p.1.1 n = 0
+              · right
+                exact fun hq0 ↦ hn (by rw [hp0, hq0, add_zero])
+              · exact Or.inl hp0
+          · exact (hp.2.union hq.2).subset fun n hn ↦ by
+              simp only [Set.mem_union, Set.mem_setOf_eq]
+              by_cases hp0 : p.1.2 n = 0
+              · right
+                exact fun hq0 ↦ hn (by rw [hp0, hq0, add_zero])
+              · exact Or.inl hp0
+        smul_mem' := by
+          intro a p hp
+          change Set.Finite {n | a * p.1.1 n ≠ 0} ∧ Set.Finite {n | a * p.1.2 n ≠ 0}
+          change Set.Finite {n | p.1.1 n ≠ 0} ∧ Set.Finite {n | p.1.2 n ≠ 0} at hp
+          constructor
+          · exact hp.1.subset fun n hn ↦ by
+              simp only [Set.mem_setOf_eq]
+              exact fun h ↦ hn (by rw [h, mul_zero])
+          · exact hp.2.subset fun n hn ↦ by
+              simp only [Set.mem_setOf_eq]
+              exact fun h ↦ hn (by rw [h, mul_zero]) }
+    have hL2 : Dense {x : L2 | Set.Finite {n | x n ≠ 0}} := by
+      rw [dense_iff_closure_eq]
+      apply Set.eq_univ_of_forall
+      intro x
+      refine mem_closure_of_tendsto (lp.hasSum_single ENNReal.ofNat_ne_top x) ?_
+      apply Eventually.of_forall
+      intro s
+      change Set.Finite {n | (∑ i ∈ s, lp.single 2 i (x i)) n ≠ 0}
+      exact s.finite_toSet.subset fun n hn ↦ by
+        simp only [Finset.mem_coe]
+        by_contra hns
+        have hz : (∑ i ∈ s, lp.single 2 i (x i)) n = 0 := by
+          simp only [lp.coeFn_sum, Finset.sum_apply, lp.coeFn_single]
+          apply Finset.sum_eq_zero
+          intro i hi
+          rw [Pi.single_eq_of_ne]
+          exact fun hni => hns (hni ▸ hi)
+        exact hn hz
+    have hker : secondCLM.ker ≤ D.topologicalClosure := by
+      intro z hz
+      let zz : secondCLM.ker := ⟨z, hz⟩
+      change z ∈ (D.topologicalClosure : Set Raw)
+      rw [Submodule.topologicalClosure_coe]
+      rw [Metric.mem_closure_iff]
+      intro ε hε
+      obtain ⟨x, hxfin, hx⟩ :=
+        hL2.exists_dist_lt (kernelEquiv zz) (div_pos hε (by norm_num : (0 : ℝ) < 4))
+      let w : secondCLM.ker := kernelEquiv.symm x
+      refine ⟨w.1, ?_, ?_⟩
+      · change IsFiniteCoordinatePair w.1.1
+        rw [show w = kernelPair x from kernelEquiv_symm_apply x]
+        change Set.Finite {n | x n ≠ 0} ∧ Set.Finite {n | (0 : ℝ) ≠ 0}
+        exact ⟨hxfin, by simp⟩
+      · rw [dist_eq_norm]
+        change ‖zz - w‖ < ε
+        have hbound := kernelEquiv_symm_norm_le (kernelEquiv zz - x)
+        change ‖kernelEquiv.symm (kernelEquiv zz - x)‖ ≤
+          4 * ‖kernelEquiv zz - x‖ at hbound
+        have heq : kernelEquiv.symm (kernelEquiv zz - x) = zz - w := by
+          rw [map_sub, LinearEquiv.symm_apply_apply]
+        rw [heq] at hbound
+        calc
+          ‖zz - w‖ ≤ 4 * ‖kernelEquiv zz - x‖ := hbound
+          _ = 4 * dist (kernelEquiv zz) x := by rw [dist_eq_norm]
+          _ < 4 * (ε / 4) := mul_lt_mul_of_pos_left hx (by norm_num)
+          _ = ε := by ring
+    have hsection (x : L2) (hx : Set.Finite {n | x n ≠ 0}) :
+        canonicalSection x ∈ D := by
+      change IsFiniteCoordinatePair (canonicalSection x).1
+      change Set.Finite {n | centralizer (fun n ↦ x n) n ≠ 0} ∧
+        Set.Finite {n | x n ≠ 0}
+      refine ⟨hx.subset ?_, hx⟩
+      intro n hn
+      simp only [Set.mem_setOf_eq] at hn ⊢
+      exact fun hzero ↦ hn (by simp [centralizer, hzero])
+    change Dense (D : Set Raw)
+    rw [dense_iff_closure_eq]
+    apply Set.eq_univ_of_forall
+    intro p
+    rw [Metric.mem_closure_iff]
+    intro ε hε
+    obtain ⟨x, hxfin, hx⟩ :=
+      hL2.exists_dist_lt (secondCLM p) (div_pos hε (by norm_num : (0 : ℝ) < 8))
+    let d : Raw := canonicalSection x
+    let c : Raw := canonicalSection (secondCLM (p - d))
+    let k : Raw := p - d - c
+    have hdD : d ∈ D := hsection x hxfin
+    have hkker : k ∈ secondCLM.ker := by
+      change secondCLM k = 0
+      simp only [k, c, d, map_sub, secondCLM_section, sub_self]
+    have hkcl := hker hkker
+    change k ∈ (D.topologicalClosure : Set Raw) at hkcl
+    rw [Submodule.topologicalClosure_coe] at hkcl
+    obtain ⟨e, heD, he⟩ :=
+      (Metric.mem_closure_iff.mp hkcl) (ε / 2) (half_pos hε)
+    refine ⟨d + e, D.add_mem hdD heD, ?_⟩
+    rw [dist_eq_norm]
+    have heq : p - (d + e) = c + (k - e) := by
+      dsimp only [k]
+      abel
+    rw [heq]
+    have hc : ‖c‖ < ε / 2 := by
+      calc
+        ‖c‖ ≤ 4 * ‖secondCLM (p - d)‖ := canonicalSection_norm_le _
+        _ = 4 * dist (secondCLM p) x := by
+          rw [map_sub, show secondCLM d = x from secondCLM_section x, dist_eq_norm]
+        _ < 4 * (ε / 8) := mul_lt_mul_of_pos_left hx (by norm_num)
+        _ = ε / 2 := by ring
+    have hke : ‖k - e‖ < ε / 2 := by
+      simpa only [dist_eq_norm] using he
+    calc
+      ‖c + (k - e)‖ ≤ ‖c‖ + ‖k - e‖ := norm_add_le _ _
+      _ < ε / 2 + ε / 2 := add_lt_add hc hke
+      _ = ε := by ring
 
 /-- A chosen pair of comparison constants for a Kalton--Peck presentation.
 Support definition for blueprint label `thm:presentation-equivalence`. -/
@@ -1275,7 +1634,56 @@ theorem presentationEquiv_spec {X Y : Type*} [NormedAddCommGroup X] [NormedSpace
         AreComparisonConstants hX cX CX → AreComparisonConstants hY cY CY →
           (∀ x, ‖presentationEquiv hX hY x‖ ≤ (CY / cX) * ‖x‖) ∧
             ∀ y, ‖(presentationEquiv hX hY).symm y‖ ≤ (CX / cY) * ‖y‖ := by
-  sorry
+  have hcoordinates (x : X) :
+      hY.coordinates (presentationEquiv hX hY x) = hX.coordinates x := by
+    simp [presentationEquiv, LinearEquiv.toContinuousLinearEquivOfBounds,
+      LinearEquiv.ofBijective]
+    exact Classical.choose_spec
+      (hY.coordinates_surjective (hX.coordinates x) (hX.coordinates_mem x))
+  refine ⟨hcoordinates, ?_, ?_⟩
+  · intro e he
+    apply LinearEquiv.ext
+    intro x
+    apply hY.coordinates_injective
+    rw [he x]
+    exact (hcoordinates x).symm
+  · intro cX CX cY CY hXconstants hYconstants
+    change 0 < cX ∧ 0 < CX ∧ ∀ x,
+      cX * kaltonPeckQuasiNorm (hX.coordinates x) ≤ ‖x‖ ∧
+        ‖x‖ ≤ CX * kaltonPeckQuasiNorm (hX.coordinates x) at hXconstants
+    change 0 < cY ∧ 0 < CY ∧ ∀ y,
+      cY * kaltonPeckQuasiNorm (hY.coordinates y) ≤ ‖y‖ ∧
+        ‖y‖ ≤ CY * kaltonPeckQuasiNorm (hY.coordinates y) at hYconstants
+    constructor
+    · intro x
+      have hq : kaltonPeckQuasiNorm (hX.coordinates x) ≤ ‖x‖ / cX :=
+        (le_div_iff₀ hXconstants.1).2
+          (by simpa [mul_comm] using (hXconstants.2.2 x).1)
+      calc
+        ‖presentationEquiv hX hY x‖ ≤
+            CY * kaltonPeckQuasiNorm (hY.coordinates (presentationEquiv hX hY x)) :=
+          (hYconstants.2.2 (presentationEquiv hX hY x)).2
+        _ = CY * kaltonPeckQuasiNorm (hX.coordinates x) := by rw [hcoordinates]
+        _ ≤ CY * (‖x‖ / cX) :=
+          mul_le_mul_of_nonneg_left hq hYconstants.2.1.le
+        _ = (CY / cX) * ‖x‖ := by ring
+    · intro y
+      have hsymm :
+          hX.coordinates ((presentationEquiv hX hY).symm y) = hY.coordinates y := by
+        symm
+        simpa using hcoordinates ((presentationEquiv hX hY).symm y)
+      have hq : kaltonPeckQuasiNorm (hY.coordinates y) ≤ ‖y‖ / cY :=
+        (le_div_iff₀ hYconstants.1).2
+          (by simpa [mul_comm] using (hYconstants.2.2 y).1)
+      calc
+        ‖(presentationEquiv hX hY).symm y‖ ≤
+            CX * kaltonPeckQuasiNorm
+              (hX.coordinates ((presentationEquiv hX hY).symm y)) :=
+          (hXconstants.2.2 ((presentationEquiv hX hY).symm y)).2
+        _ = CX * kaltonPeckQuasiNorm (hY.coordinates y) := by rw [hsymm]
+        _ ≤ CX * (‖y‖ / cY) :=
+          mul_le_mul_of_nonneg_left hq hXconstants.2.1.le
+        _ = (CX / cY) * ‖y‖ := by ring
 
 end Coordinates
 

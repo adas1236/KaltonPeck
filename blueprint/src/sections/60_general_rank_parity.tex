@@ -1,14 +1,15 @@
 \section{The general rank-parity theorem}
 
 \begin{lemma}[Kernel of a finite-rank polynomial]\label{lem:finite-rank-kernel}
-Let $X$ be a real Banach space, let $T:X\to X$ be bounded, and suppose that $F=T^2+I$ has finite
-rank.  Then $E=\ker F$ is closed and finite-codimensional,
+Let $X$ be a real Banach space, let $T:X\to X$ be bounded, and suppose $F=T^2+I$ has finite rank.  Then
+$E=\ker F$ is closed and finite-codimensional,
 \[
   \codim_XE=\rank F,
 \]
 $E$ is $T$-invariant, and $T^2=-I$ on $E$.
 \uses{lem:quotient-range,def:fredholm-rank}
 \lean{KaltonPeck.Support.GeneralRank.finiteRankPolynomialKernel}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -43,6 +44,7 @@ $\eta(x,y)=\omega(Gx,y)$.  If $R=\rad(\eta|_E)$ is finite-dimensional, then $R$ 
 and has even dimension.
 \uses{lem:finite-rank-kernel,lem:rank-parity-form,lem:finite-complex-even}
 \lean{KaltonPeck.Support.GeneralRank.restrictedRadicalEven}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -64,6 +66,7 @@ Assume that $I+T^+T$ is Fredholm and that $T^2+I$ has finite rank.  Then
 \]
 \uses{lem:finite-rank-kernel,lem:rank-parity-form,thm:finite-codim-parity,lem:restricted-radical-even,lem:strong-reflexive}
 \lean{KaltonPeck.rankParityGeneral}
+\leanok
 \end{theorem}
 
 \begin{proof}

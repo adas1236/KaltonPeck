@@ -1,5 +1,6 @@
 import KaltonPeck.Support.Fredholm
 import KaltonPeck.Support.FiniteParity
+import Mathlib.Analysis.Normed.Ring.Units
 
 namespace KaltonPeck.Support.PathParity
 
@@ -379,7 +380,251 @@ theorem localSchurReduction {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ 
     (hFredholm : IsFredholm (eta t0).toDual) :
     ∃ epsilon : ℝ, 0 < epsilon ∧ ∀ t : J, |(t : ℝ) - (t0 : ℝ)| < epsilon →
       Nonempty (LocalSchurPointData (eta t0) (eta t)) := by
-  sorry
+  let data := kernelSplitting (eta t0) hReflexive hFredholm
+  let Y := data.complement
+  let A := Forms.continuousAnnihilator Y
+  let B := Forms.continuousAnnihilator (eta t0).radical
+  letI : CompleteSpace Y := data.complementClosed.completeSpace_coe
+  let q : StrongDual ℝ X →L[ℝ] B :=
+    (ContinuousLinearMap.snd ℝ A B).comp data.dualCoordinates.toContinuousLinearMap
+  let C (t : J) : (eta t0).radical →L[ℝ] B :=
+    q.comp ((eta t).toDual.comp (eta t0).radical.subtypeL)
+  let D (t : J) : Y →L[ℝ] B :=
+    q.comp ((eta t).toDual.comp Y.subtypeL)
+  have hSecondCoordinate (phi : B) :
+      (data.dualCoordinates (phi : StrongDual ℝ X)).2 = phi := by
+    have hcoords : data.dualCoordinates (phi : StrongDual ℝ X) = (0, phi) := by
+      apply data.dualCoordinates.symm.injective
+      rw [data.dualCoordinates.symm_apply_apply, data.dualCoordinates_symm_apply]
+      simp
+    exact congrArg Prod.snd hcoords
+  have hDecompose (phi : StrongDual ℝ X) :
+      phi = ((data.dualCoordinates phi).1 : StrongDual ℝ X) +
+        ((data.dualCoordinates phi).2 : StrongDual ℝ X) := by
+    rw [← data.dualCoordinates_symm_apply (data.dualCoordinates phi),
+      data.dualCoordinates.symm_apply_apply]
+  have hD0 : D t0 = data.restrictionEquiv.toContinuousLinearMap := by
+    apply ContinuousLinearMap.ext
+    intro y
+    change (data.dualCoordinates ((eta t0).toDual (y : X))).2 =
+      data.restrictionEquiv y
+    rw [← data.restrictionEquiv_apply]
+    exact hSecondCoordinate (data.restrictionEquiv y)
+  let preY : (X →L[ℝ] StrongDual ℝ X) →L[ℝ] Y →L[ℝ] StrongDual ℝ X :=
+    (ContinuousLinearMap.compL ℝ Y X (StrongDual ℝ X)).flip Y.subtypeL
+  let r : StrongDual ℝ X →L[ℝ] Y :=
+    data.restrictionEquiv.symm.toContinuousLinearMap.comp q
+  let postr : (Y →L[ℝ] StrongDual ℝ X) →L[ℝ] Y →L[ℝ] Y :=
+    ContinuousLinearMap.compL ℝ Y (StrongDual ℝ X) Y r
+  let conjugate : (X →L[ℝ] StrongDual ℝ X) →L[ℝ] Y →L[ℝ] Y :=
+    postr.comp preY
+  let P (t : J) : Y →L[ℝ] Y := conjugate (eta t).toDual
+  have hP_apply (t : J) (y : Y) :
+      P t y = data.restrictionEquiv.symm (D t y) := by
+    change data.restrictionEquiv.symm
+      (q ((eta t).toDual (y : X))) =
+        data.restrictionEquiv.symm (q ((eta t).toDual (y : X)))
+    rfl
+  have hP0 : P t0 = ContinuousLinearMap.id ℝ Y := by
+    apply ContinuousLinearMap.ext
+    intro y
+    rw [hP_apply, hD0]
+    exact data.restrictionEquiv.symm_apply_apply y
+  have hPContinuous : Continuous P :=
+    conjugate.continuous.comp hContinuous
+  have hNhd :
+      P ⁻¹' Metric.ball (ContinuousLinearMap.id ℝ Y) 1 ∈ nhds t0 := by
+    apply (Metric.isOpen_ball.preimage hPContinuous).mem_nhds
+    simp [hP0]
+  obtain ⟨epsilon, hEpsilon, hBall⟩ := Metric.mem_nhds_iff.mp hNhd
+  refine ⟨epsilon, hEpsilon, ?_⟩
+  intro t ht
+  have htBall : t ∈ Metric.ball t0 epsilon := by
+    change dist (t : ℝ) (t0 : ℝ) < epsilon
+    simpa [Real.dist_eq] using ht
+  have hPtBall := hBall htBall
+  have hPerturb :
+      ‖ContinuousLinearMap.id ℝ Y - P t‖ < 1 := by
+    change dist (P t) (ContinuousLinearMap.id ℝ Y) < 1 at hPtBall
+    have hdist :
+        dist (ContinuousLinearMap.id ℝ Y) (P t) < 1 := by
+      rw [dist_comm]
+      exact hPtBall
+    rw [dist_eq_norm (ContinuousLinearMap.id ℝ Y) (P t)] at hdist
+    exact hdist
+  let u : (Y →L[ℝ] Y)ˣ :=
+    Units.oneSub (ContinuousLinearMap.id ℝ Y - P t) hPerturb
+  let PtEquiv : Y ≃L[ℝ] Y :=
+    ContinuousLinearEquiv.unitsEquiv ℝ Y u
+  have hPtEquiv : PtEquiv.toContinuousLinearMap = P t := by
+    apply ContinuousLinearMap.ext
+    intro y
+    change (u : Y →L[ℝ] Y) y = P t y
+    dsimp only [u]
+    rw [Units.val_oneSub]
+    simp
+  let DtEquiv : Y ≃L[ℝ] B := PtEquiv.trans data.restrictionEquiv
+  have hDtEquiv : DtEquiv.toContinuousLinearMap = D t := by
+    apply ContinuousLinearMap.ext
+    intro y
+    change data.restrictionEquiv (PtEquiv y) = D t y
+    have hy := congrArg (fun T : Y →L[ℝ] Y => T y) hPtEquiv
+    calc
+      data.restrictionEquiv (PtEquiv y) =
+          data.restrictionEquiv (P t y) :=
+        congrArg data.restrictionEquiv hy
+      _ = D t y := by
+        rw [hP_apply]
+        exact data.restrictionEquiv.apply_symm_apply (D t y)
+  let L : (eta t0).radical →L[ℝ] Y :=
+    DtEquiv.symm.toContinuousLinearMap.comp (C t)
+  have hDL (f : (eta t0).radical) : D t (L f) = C t f := by
+    rw [← hDtEquiv]
+    exact DtEquiv.apply_symm_apply (C t f)
+  let m : (eta t0).radical →L[ℝ] X :=
+    (eta t0).radical.subtypeL - Y.subtypeL.comp L
+  have hm_apply (f : (eta t0).radical) :
+      m f = (f : X) - (L f : X) := rfl
+  have hLower (f : (eta t0).radical) :
+      q ((eta t).toDual (m f)) = 0 := by
+    rw [hm_apply, map_sub, map_sub]
+    change C t f - D t (L f) = 0
+    rw [hDL]
+    exact sub_self (C t f)
+  have hmInjective : Function.Injective m := by
+    intro f g hfg
+    have hzero : m (f - g) = 0 := by
+      rw [map_sub, hfg, sub_self]
+    rw [hm_apply] at hzero
+    have heq : ((f - g : (eta t0).radical) : X) = (L (f - g) : X) :=
+      sub_eq_zero.mp hzero
+    have hbot : ((f - g : (eta t0).radical) : X) ∈ (⊥ : Submodule ℝ X) :=
+      data.kernel_disjoint_complement.le_bot
+        ⟨(f - g).property, heq ▸ (L (f - g)).property⟩
+    apply Subtype.ext
+    exact sub_eq_zero.mp ((Submodule.mem_bot ℝ).mp hbot)
+  let reduced : ContinuousAlternatingForm (eta t0).radical :=
+    { toDual :=
+        ((ContinuousLinearMap.flip
+          (ContinuousLinearMap.compL ℝ (eta t0).radical X ℝ)) m).comp
+            ((eta t).toDual.comp m)
+      alternating := fun f => (eta t).alternating (m f) }
+  have hReducedApply (f g : (eta t0).radical) :
+      reduced.toDual f g = (eta t).toDual (m f) (m g) := rfl
+  have hRadicalToKernel (f : reduced.radical) :
+      (eta t).toDual (m (f : (eta t0).radical)) = 0 := by
+    let phi : StrongDual ℝ X := (eta t).toDual (m (f : (eta t0).radical))
+    have hSecond : (data.dualCoordinates phi).2 = 0 := by
+      exact hLower f
+    have hPhiFirst :
+        phi = ((data.dualCoordinates phi).1 : StrongDual ℝ X) := by
+      calc
+        phi = ((data.dualCoordinates phi).1 : StrongDual ℝ X) +
+            ((data.dualCoordinates phi).2 : StrongDual ℝ X) := hDecompose phi
+        _ = ((data.dualCoordinates phi).1 : StrongDual ℝ X) := by
+          rw [hSecond]
+          simp
+    have hVanishY (y : Y) : phi (y : X) = 0 := by
+      rw [hPhiFirst]
+      have hy := (data.dualCoordinates phi).1.property
+      change ((ContinuousLinearMap.compL ℝ Y X ℝ).flip Y.subtypeL)
+        ((data.dualCoordinates phi).1 : StrongDual ℝ X) = 0 at hy
+      exact DFunLike.congr_fun hy y
+    have hFirst : (data.dualCoordinates phi).1 = 0 := by
+      apply data.annihilatorComplementEquivKernelDual.injective
+      apply ContinuousLinearMap.ext
+      intro g
+      rw [data.annihilatorComplementEquivKernelDual_apply]
+      change ((data.dualCoordinates phi).1 : StrongDual ℝ X) (g : X) = 0
+      rw [← hPhiFirst]
+      calc
+        phi (g : X) = phi (m g + (L g : X)) := by
+          congr 1
+          rw [hm_apply]
+          abel
+        _ = phi (m g) + phi (L g : X) := map_add _ _ _
+        _ = 0 + 0 := by
+          congr 1
+          · have hf := DFunLike.congr_fun f.property g
+            exact hReducedApply f g ▸ hf
+          · exact hVanishY (L g)
+        _ = 0 := zero_add 0
+    calc
+      (eta t).toDual (m (f : (eta t0).radical)) = phi := rfl
+      _ = ((data.dualCoordinates phi).1 : StrongDual ℝ X) +
+          ((data.dualCoordinates phi).2 : StrongDual ℝ X) := hDecompose phi
+      _ = 0 := by rw [hFirst, hSecond]; simp
+  let toKernel : reduced.radical →ₗ[ℝ] (eta t).radical :=
+    { toFun := fun f => ⟨m (f : (eta t0).radical), hRadicalToKernel f⟩
+      map_add' := by
+        intro f g
+        apply Subtype.ext
+        exact m.map_add f g
+      map_smul' := by
+        intro a f
+        apply Subtype.ext
+        exact m.map_smul a f }
+  have hToKernelInjective : Function.Injective toKernel := by
+    intro f g hfg
+    apply Subtype.ext
+    apply hmInjective
+    exact congrArg Subtype.val hfg
+  have hToKernelSurjective : Function.Surjective toKernel := by
+    intro z
+    have hzSup : (z : X) ∈ (eta t0).radical ⊔ Y := by
+      rw [data.kernel_sup_complement]
+      exact Submodule.mem_top
+    rcases Submodule.mem_sup.1 hzSup with ⟨x, hx, y, hy, hxy⟩
+    let f : (eta t0).radical := ⟨x, hx⟩
+    let y' : Y := ⟨y, hy⟩
+    have hzAdd : (z : X) = (f : X) + (y' : X) := hxy.symm
+    have hzLower : C t f + D t y' = 0 := by
+      have hz := congrArg q z.property
+      rw [map_zero] at hz
+      rw [hzAdd, map_add, map_add] at hz
+      exact hz
+    have hDsum : D t (L f + y') = 0 := by
+      rw [map_add, hDL]
+      exact hzLower
+    have hsum : L f + y' = 0 := by
+      have heval :=
+        congrArg (fun T : Y →L[ℝ] B => T (L f + y')) hDtEquiv
+      have hzeroE : DtEquiv (L f + y') = 0 := by
+        calc
+          DtEquiv (L f + y') = D t (L f + y') := heval
+          _ = 0 := hDsum
+      apply DtEquiv.injective
+      simpa only [map_zero] using hzeroE
+    have hy' : y' = -L f := eq_neg_of_add_eq_zero_right hsum
+    have hzm : (z : X) = m f := by
+      rw [hm_apply]
+      calc
+        (z : X) = (f : X) + (y' : X) := hzAdd
+        _ = (f : X) + ((-L f : Y) : X) := by rw [hy']
+        _ = (f : X) - (L f : X) := by
+          simp only [sub_eq_add_neg, Submodule.coe_neg]
+    have hfRadical : f ∈ reduced.radical := by
+      change reduced.toDual f = 0
+      apply ContinuousLinearMap.ext
+      intro g
+      rw [hReducedApply]
+      rw [← hzm]
+      exact DFunLike.congr_fun z.property (m g)
+    refine ⟨⟨f, hfRadical⟩, ?_⟩
+    apply Subtype.ext
+    exact hzm.symm
+  let radicalEquivKernel : reduced.radical ≃ₗ[ℝ] (eta t).radical :=
+    LinearEquiv.ofBijective toKernel ⟨hToKernelInjective, hToKernelSurjective⟩
+  exact ⟨{
+    kernelMap := m
+    kernelMap_injective := hmInjective
+    reducedForm := reduced
+    reducedForm_apply := hReducedApply
+    radicalEquivKernel := radicalEquivKernel
+    radicalEquivKernel_apply := by
+      intro f
+      rfl
+  }⟩
 
 /-- Kernel parity is constant along a norm-continuous Fredholm path of alternating forms.
 
@@ -391,7 +636,30 @@ theorem mod2Path {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (hFredholm : ∀ t, IsFredholm (eta t).toDual) :
     ∀ s t, Nat.ModEq 2 (Module.finrank ℝ (eta s).radical)
       (Module.finrank ℝ (eta t).radical) := by
-  sorry
+  let k : Set.Icc (0 : ℝ) 1 → ℕ :=
+    fun t => Module.finrank ℝ (eta t).radical
+  have hlocal : ∀ t0, ∀ᶠ t in nhds t0, Nat.ModEq 2 (k t) (k t0) := by
+    intro t0
+    obtain ⟨epsilon, hepsilon, hSchur⟩ :=
+      localSchurReduction (Set.Icc (0 : ℝ) 1) t0 eta hContinuous hReflexive
+        (hFredholm t0)
+    filter_upwards [Metric.ball_mem_nhds t0 hepsilon] with t ht
+    have hclose : |(t : ℝ) - (t0 : ℝ)| < epsilon := by
+      simpa [Metric.mem_ball, Subtype.dist_eq, Real.dist_eq] using ht
+    obtain ⟨data⟩ := hSchur t hclose
+    letI : FiniteDimensional ℝ (eta t0).radical := (hFredholm t0).1
+    have hparity :=
+      (FiniteParity.finiteContinuousAlternatingRankEven data.reducedForm).2
+    rw [data.radicalEquivKernel.finrank_eq] at hparity
+    exact hparity
+  have hcontinuous : Continuous (fun t => k t % 2) :=
+    continuous_iff_continuousAt.2 fun t0 => by
+      have heq : (fun t => k t % 2) =ᶠ[nhds t0] (fun _ => k t0 % 2) := hlocal t0
+      exact continuousAt_const.congr_of_eventuallyEq heq
+  intro s t
+  change k s % 2 = k t % 2
+  exact PreconnectedSpace.constant
+    (inferInstance : PreconnectedSpace (Set.Icc (0 : ℝ) 1)) hcontinuous
 
 end
 

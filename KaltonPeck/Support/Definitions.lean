@@ -36,7 +36,7 @@ Blueprint: `def:weak-form`; audit: `DEF-RADICAL`. -/
 theorem ContinuousAlternatingForm.radical_eq_ker {X : Type*} [NormedAddCommGroup X]
     [NormedSpace ℝ X] (b : ContinuousAlternatingForm X) :
     b.radical = b.toDual.toLinearMap.ker := by
-  sorry
+  rfl
 
 /-- The radical of a continuous alternating form is closed.
 
@@ -46,7 +46,7 @@ radical elaborate without a redundant closedness binder. -/
 theorem ContinuousAlternatingForm.radical_isClosed {X : Type*} [NormedAddCommGroup X]
     [NormedSpace ℝ X] (b : ContinuousAlternatingForm X) :
     IsClosed (b.radical : Set X) := by
-  sorry
+  exact b.toDual.isClosed_ker
 
 /-- The restriction of a continuous alternating form to a linear subspace.
 

@@ -21,7 +21,19 @@ theorem finiteRankPolynomialKernel {X : Type*} [NormedAddCommGroup X]
       (∀ x : (T ^ 2 + 1).toLinearMap.ker,
         T (x : X) ∈ (T ^ 2 + 1).toLinearMap.ker) ∧
       ∀ x : (T ^ 2 + 1).toLinearMap.ker, T (T (x : X)) = -(x : X) := by
-  sorry
+  obtain ⟨hclosed, hfinite, hdim, _⟩ :=
+    Fredholm.quotientKernelRange (T ^ 2 + 1) hFiniteRank
+  refine ⟨hclosed, hfinite, hdim, ?_, ?_⟩
+  · intro x
+    have hx := x.property
+    change T (T (T (x : X))) + T (x : X) = 0
+    change T (T (x : X)) + (x : X) = 0 at hx
+    rw [← map_add]
+    rw [hx, map_zero]
+  · intro x
+    have hx := x.property
+    change T (T (x : X)) + (x : X) = 0 at hx
+    exact eq_neg_of_add_eq_zero_left hx
 
 /-- The auxiliary alternating Fredholm form, together with every identity used downstream.
 
@@ -140,7 +152,53 @@ theorem restrictedRadicalEven {X : Type*} [NormedAddCommGroup X]
       Even (Module.finrank ℝ
         ((rankParityForm omega T).form.restrictedRadical
           (T ^ 2 + 1).toLinearMap.ker)) := by
-  sorry
+  let E := (T ^ 2 + 1).toLinearMap.ker
+  let eta := (rankParityForm omega T).form
+  let R := eta.restrictedRadical E
+  change (∀ x : R, T (x : X) ∈ R) ∧ Even (Module.finrank ℝ R)
+  obtain ⟨_, _, _, hTE, hT2⟩ := finiteRankPolynomialKernel T hFiniteRank
+  have hRE (x : R) : (x : X) ∈ E := by
+    have hx := x.property
+    change (x : X) ∈ E ⊓ eta.orthogonal E at hx
+    exact hx.1
+  have hR : ∀ x : R, T (x : X) ∈ R := by
+    intro x
+    have hx := x.property
+    change (x : X) ∈ E ⊓ eta.orthogonal E at hx
+    change T (x : X) ∈ E ⊓ eta.orthogonal E
+    refine ⟨hTE ⟨x, hx.1⟩, ?_⟩
+    have hxZero (z : E) : eta.toDual (x : X) (z : X) = 0 := by
+      have hxOrth := hx.2
+      change
+        (((ContinuousLinearMap.flip (ContinuousLinearMap.compL ℝ E X ℝ))
+          E.subtypeL).comp eta.toDual).toLinearMap (x : X) = 0 at hxOrth
+      exact DFunLike.congr_fun hxOrth z
+    change
+      (((ContinuousLinearMap.flip (ContinuousLinearMap.compL ℝ E X ℝ))
+        E.subtypeL).comp eta.toDual).toLinearMap (T (x : X)) = 0
+    apply ContinuousLinearMap.ext
+    intro y
+    change eta.toDual (T (x : X)) (y : X) = 0
+    let Ty : E := ⟨T (y : X), hTE y⟩
+    have hxy : eta.toDual (x : X) (T (y : X)) = 0 := hxZero Ty
+    have hx2 : T (T (x : X)) = -(x : X) := hT2 ⟨x, hx.1⟩
+    have hy2 : T (T (y : X)) = -(y : X) := hT2 y
+    have h1 := (rankParityForm omega T).form_apply_expanded (T (x : X)) (y : X)
+    have h2 := (rankParityForm omega T).form_apply_expanded (x : X) (T (y : X))
+    change eta.toDual (T (x : X)) (y : X) =
+      omega.toDual (T (x : X)) (y : X) +
+        omega.toDual (T (T (x : X))) (T (y : X)) at h1
+    change eta.toDual (x : X) (T (y : X)) =
+      omega.toDual (x : X) (T (y : X)) +
+        omega.toDual (T (x : X)) (T (T (y : X))) at h2
+    rw [hx2] at h1
+    rw [hy2] at h2
+    simp only [map_neg, neg_apply] at h1 h2
+    linarith
+  refine ⟨hR, ?_⟩
+  apply FiniteParity.finiteInvariantSubmoduleComplexDimensionEven T.toLinearMap R hR
+  intro x
+  exact hT2 ⟨x, hRE x⟩
 
 end
 

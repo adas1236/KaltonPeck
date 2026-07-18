@@ -22,7 +22,34 @@ theorem continuousDoubleAnnihilator {X : Type*} [NormedAddCommGroup X]
     [NormedSpace ℝ X] [CompleteSpace X] (W : Submodule ℝ X)
     (hW : IsClosed (W : Set X)) :
     {x : X | ∀ φ : continuousAnnihilator W, (φ : StrongDual ℝ X) x = 0} = (W : Set X) := by
-  sorry
+  ext x
+  constructor
+  · intro hx
+    by_contra hnot
+    obtain ⟨f, u, hfW, hfx⟩ := geometric_hahn_banach_closed_point W.convex hW hnot
+    have hvanish : ∀ w : W, f w = 0 := by
+      intro w
+      by_contra hne
+      have hmem : ((u + 1) / f w) • (w : X) ∈ W := W.smul_mem _ w.property
+      have hlt := hfW _ hmem
+      have heq : f (((u + 1) / f w) • (w : X)) = u + 1 := by
+        simp [hne]
+      rw [heq] at hlt
+      linarith
+    let φ : continuousAnnihilator W :=
+      ⟨f, by
+        change ((ContinuousLinearMap.compL ℝ W X ℝ).flip W.subtypeL) f = 0
+        apply ContinuousLinearMap.ext
+        intro w
+        exact hvanish w⟩
+    have hzero : f x = 0 := hx φ
+    have hu := hfW 0 W.zero_mem
+    simp only [map_zero] at hu
+    linarith
+  · intro hx φ
+    have hφ := φ.property
+    change ((ContinuousLinearMap.compL ℝ W X ℝ).flip W.subtypeL) φ.val = 0 at hφ
+    exact DFunLike.congr_fun hφ ⟨x, hx⟩
 
 /-- Pullback along the quotient map as a continuous equivalence with the annihilator.
 
@@ -106,7 +133,7 @@ theorem quotientDualEquivAnnihilator_apply {X : Type*} [NormedAddCommGroup X]
     [hW : IsClosed (W : Set X)] (φ : StrongDual ℝ (X ⧸ W)) (x : X) :
     ((quotientDualEquivAnnihilator W φ : continuousAnnihilator W) : StrongDual ℝ X) x =
       φ (Submodule.Quotient.mk x) := by
-  sorry
+  rfl
 
 /-- The transpose identity that relates a strong alternating form to the double-dual inclusion.
 
@@ -116,7 +143,14 @@ theorem strongSymplecticTransposeInclusion {X : Type*} [NormedAddCommGroup X]
     (transpose ω.toDual.toContinuousLinearMap).comp
         (NormedSpace.inclusionInDoubleDual ℝ X) =
       -ω.toDual.toContinuousLinearMap := by
-  sorry
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro y
+  change ω.toDual y x = -ω.toDual x y
+  have h := ω.alternating (x + y)
+  simp only [map_add, add_apply, ω.alternating, add_zero, zero_add] at h
+  linarith
 
 /-- Every strong symplectic real Banach space is reflexive.
 
@@ -124,14 +158,44 @@ Blueprint: `lem:strong-reflexive`; audit: `AUX-STRONG-SYMPLECTIC-REFLEXIVE`. -/
 theorem strongSymplecticReflexive {X : Type*} [NormedAddCommGroup X]
     [NormedSpace ℝ X] [CompleteSpace X] (ω : StrongSymplecticForm X) :
     Function.Surjective (NormedSpace.inclusionInDoubleDual ℝ X) := by
-  sorry
+  intro F
+  let z : X := ω.toDual.symm ((transpose ω.toDual.toContinuousLinearMap) F)
+  refine ⟨-z, ?_⟩
+  apply ContinuousLinearMap.ext
+  intro f
+  let y : X := ω.toDual.symm f
+  have hy : ω.toDual y = f := ω.toDual.apply_symm_apply f
+  change f (-z) = F f
+  rw [← hy]
+  change ω.toDual y (-z) = F (ω.toDual y)
+  rw [map_neg]
+  have h := ω.alternating (y + z)
+  simp only [map_add, add_apply, ω.alternating, add_zero, zero_add] at h
+  have hskew : -ω.toDual y z = ω.toDual z y := by linarith
+  rw [hskew]
+  change
+    ω.toDual (ω.toDual.symm ((transpose ω.toDual.toContinuousLinearMap) F)) y =
+      F (ω.toDual y)
+  rw [ω.toDual.apply_symm_apply]
+  rfl
 
 /-- The symplectic adjoint of the identity is the identity.
 
 Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_one {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) : ω.adjoint 1 = 1 := by
-  sorry
+  have hadj (T : X →L[ℝ] X) (x y : X) :
+      ω.toDual (ω.adjoint T x) y = ω.toDual x (T y) := by
+    change ω.toDual (ω.toDual.symm ((transpose T) (ω.toDual x))) y = _
+    rw [ω.toDual.apply_symm_apply]
+    rfl
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ω.toDual.injective
+  apply ContinuousLinearMap.ext
+  intro y
+  rw [hadj]
+  rfl
 
 /-- The symplectic adjoint is additive.
 
@@ -139,7 +203,18 @@ Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_add {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) (A B : X →L[ℝ] X) :
     ω.adjoint (A + B) = ω.adjoint A + ω.adjoint B := by
-  sorry
+  have hadj (T : X →L[ℝ] X) (x y : X) :
+      ω.toDual (ω.adjoint T x) y = ω.toDual x (T y) := by
+    change ω.toDual (ω.toDual.symm ((transpose T) (ω.toDual x))) y = _
+    rw [ω.toDual.apply_symm_apply]
+    rfl
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ω.toDual.injective
+  apply ContinuousLinearMap.ext
+  intro y
+  rw [hadj]
+  simp only [add_apply, map_add, hadj]
 
 /-- The symplectic adjoint commutes with real scalar multiplication.
 
@@ -147,7 +222,18 @@ Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_smul {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) (a : ℝ) (A : X →L[ℝ] X) :
     ω.adjoint (a • A) = a • ω.adjoint A := by
-  sorry
+  have hadj (T : X →L[ℝ] X) (x y : X) :
+      ω.toDual (ω.adjoint T x) y = ω.toDual x (T y) := by
+    change ω.toDual (ω.toDual.symm ((transpose T) (ω.toDual x))) y = _
+    rw [ω.toDual.apply_symm_apply]
+    rfl
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ω.toDual.injective
+  apply ContinuousLinearMap.ext
+  intro y
+  rw [hadj]
+  simp only [smul_apply, map_smul, hadj]
 
 /-- The symplectic adjoint reverses composition.
 
@@ -155,7 +241,20 @@ Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_mul {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) (A B : X →L[ℝ] X) :
     ω.adjoint (A * B) = ω.adjoint B * ω.adjoint A := by
-  sorry
+  have hadj (T : X →L[ℝ] X) (x y : X) :
+      ω.toDual (ω.adjoint T x) y = ω.toDual x (T y) := by
+    change ω.toDual (ω.toDual.symm ((transpose T) (ω.toDual x))) y = _
+    rw [ω.toDual.apply_symm_apply]
+    rfl
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ω.toDual.injective
+  apply ContinuousLinearMap.ext
+  intro y
+  rw [hadj]
+  change ω.toDual x ((A.comp B) y) = ω.toDual (ω.adjoint B (ω.adjoint A x)) y
+  rw [hadj, hadj]
+  rfl
 
 /-- Taking the symplectic adjoint twice returns the original operator.
 
@@ -163,7 +262,26 @@ Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_involutive {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) (A : X →L[ℝ] X) :
     ω.adjoint (ω.adjoint A) = A := by
-  sorry
+  have hadj (T : X →L[ℝ] X) (x y : X) :
+      ω.toDual (ω.adjoint T x) y = ω.toDual x (T y) := by
+    change ω.toDual (ω.toDual.symm ((transpose T) (ω.toDual x))) y = _
+    rw [ω.toDual.apply_symm_apply]
+    rfl
+  have hskew (x y : X) : ω.toDual x y = -ω.toDual y x := by
+    have h := ω.alternating (x + y)
+    simp only [map_add, add_apply, ω.alternating, add_zero, zero_add] at h
+    linarith
+  apply ContinuousLinearMap.ext
+  intro x
+  apply ω.toDual.injective
+  apply ContinuousLinearMap.ext
+  intro y
+  calc
+    ω.toDual (ω.adjoint (ω.adjoint A) x) y =
+        ω.toDual x (ω.adjoint A y) := hadj _ _ _
+    _ = -ω.toDual (ω.adjoint A y) x := hskew _ _
+    _ = -ω.toDual y (A x) := congrArg Neg.neg (hadj _ _ _)
+    _ = ω.toDual (A x) y := (hskew _ _).symm
 
 /-- Evaluation identity characterizing the symplectic adjoint.
 
@@ -171,7 +289,9 @@ Blueprint: `lem:adjoint-calculus`; audit: `AUX-SYMPLECTIC-ADJOINT-CALCULUS`. -/
 theorem adjoint_apply {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [CompleteSpace X] (ω : StrongSymplecticForm X) (A : X →L[ℝ] X) (x y : X) :
     ω.toDual (ω.adjoint A x) y = ω.toDual x (A y) := by
-  sorry
+  change ω.toDual (ω.toDual.symm ((transpose A) (ω.toDual x))) y = _
+  rw [ω.toDual.apply_symm_apply]
+  rfl
 
 end
 

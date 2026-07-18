@@ -18,6 +18,7 @@ For every bounded operator $T$, put $W=R_0+R_1T$.  Then $W$ is bounded,
 In particular, $R_0^+$ is a bounded left inverse of $W$, so $W$ is upper semi-Fredholm.
 \uses{thm:block-transport,def:upper-semi,lem:adjoint-calculus,lem:fredholm-calculus}
 \lean{KaltonPeck.Support.GraphFredholm.evenBlockSequence, KaltonPeck.Support.GraphFredholm.oddBlockSequence, KaltonPeck.Support.GraphFredholm.evenOddBlockSequences, KaltonPeck.Support.GraphFredholm.evenBlockEmbedding, KaltonPeck.Support.GraphFredholm.oddBlockEmbedding, KaltonPeck.Support.GraphFredholm.graphBlockOperator, KaltonPeck.Support.GraphFredholm.evenOddBlocks}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -47,6 +48,7 @@ For every bounded operator $T$ on a complete real normed space with a Kalton--Pe
 $I+T^+T$ is Fredholm.
 \uses{lem:even-odd-blocks,thm:cgp-transport}
 \lean{KaltonPeck.Support.GraphFredholm.graphFredholm}
+\leanok
 \end{proposition}
 
 \begin{proof}
@@ -68,6 +70,7 @@ in operator norm, and
 Every $S_t$ is Fredholm.
 \uses{def:weak-form,thm:ks-transport,lem:adjoint-calculus,prop:graph-fredholm,lem:fredholm-calculus}
 \lean{KaltonPeck.Support.GraphFredholm.kaltonPeckAlternatingPath, KaltonPeck.Support.GraphFredholm.kaltonPeckAlternatingPath_spec}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -101,6 +104,7 @@ For every bounded operator $T$ on a complete presented real $Z_2$, the Fredholm 
 $I+T^+T$ has finite, even-dimensional kernel.
 \uses{lem:kp-alternating-path,thm:ks-transport,thm:mod2-path,lem:strong-reflexive,prop:graph-fredholm}
 \lean{KaltonPeck.Support.GraphFredholm.evenGraphKernel}
+\leanok
 \end{proposition}
 
 \begin{proof}
@@ -123,6 +127,7 @@ operator on $Z_2$.  If $T^2+I$ has finite rank, then
 \]
 \uses{thm:general-rank-parity,thm:ks-transport,prop:graph-fredholm,prop:even-kernel}
 \lean{KaltonPeck.rankParityZ2}
+\leanok
 \end{theorem}
 
 \begin{proof}

@@ -738,7 +738,62 @@ theorem canonicalBasisCoordinates (n : ℕ) :
         (standardBasisSequence n, 0) ∧
       canonicalRealKaltonPeckPresentation.coordinates (canonicalSecondBasisVector n) =
         (0, standardBasisSequence n) := by
-  sorry
+  constructor <;> rfl
+
+/-- The canonical inclusion `ℓ₂ → Z₂`, given by the first coordinate.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+def canonicalL2Inclusion : CanonicalL2 →L[ℝ] CanonicalRealKaltonPeck := by
+  exact kernelContinuousLinearMap
+
+/-- Coordinates of the canonical Hilbert-space inclusion.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2Inclusion_coordinates (x : CanonicalL2) :
+    canonicalRealKaltonPeckPresentation.coordinates (canonicalL2Inclusion x) =
+      ((fun n ↦ x n), 0) := by
+  exact kernelVector_coordinates x
+
+/-- The canonical Hilbert-space inclusion is injective.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2Inclusion_injective :
+    Function.Injective canonicalL2Inclusion := by
+  intro x y hxy
+  have hcoordinates := congrArg canonicalRealKaltonPeckPresentation.coordinates hxy
+  rw [canonicalL2Inclusion_coordinates, canonicalL2Inclusion_coordinates] at hcoordinates
+  apply Subtype.ext
+  exact congrArg Prod.fst hcoordinates
+
+/-- The canonical Kalton--Peck space is infinite-dimensional.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalRealKaltonPeck_not_finiteDimensional :
+    ¬ FiniteDimensional ℝ CanonicalRealKaltonPeck := by
+  intro h
+  letI : FiniteDimensional ℝ CanonicalRealKaltonPeck := h
+  have hL2 : FiniteDimensional ℝ CanonicalL2 :=
+    FiniteDimensional.of_injective canonicalL2Inclusion.toLinearMap
+      canonicalL2Inclusion_injective
+  exact canonicalL2_not_finiteDimensional hL2
+
+/-- The canonical inclusion identifies `ℓ₂` with the kernel of the canonical quotient.
+Blueprint support for `thm:kp-canonical-banach`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2Inclusion_range :
+    canonicalL2Inclusion.range = canonicalL2Quotient.ker := by
+  apply le_antisymm
+  · rintro z ⟨x, rfl⟩
+    change canonicalL2Quotient (canonicalL2Inclusion x) = 0
+    apply Subtype.ext
+    funext n
+    rw [canonicalL2Quotient_apply, canonicalL2Inclusion_coordinates]
+    rfl
+  · intro z hz
+    change canonicalL2Quotient z = 0 at hz
+    have hsecond :
+        (canonicalRealKaltonPeckPresentation.coordinates z).2 = 0 := by
+      funext n
+      have hn := congrArg (fun y : CanonicalL2 ↦ y n) hz
+      simpa only [canonicalL2Quotient_apply, lp.coeFn_zero, Pi.zero_apply] using hn
+    obtain ⟨x, hx⟩ := vector_eq_kernelVector_of_second_eq_zero z hsecond
+    refine ⟨x, ?_⟩
+    exact hx.symm
 
 /-- The strong Kalton--Swanson form on the fixed project-normalized canonical model.
 Blueprint label: `thm:ks-primary`; audit IDs `EXT-KS-PRIMARY` and `INF-KP-L2-PAIRING`. -/
@@ -758,7 +813,7 @@ theorem canonicalKaltonSwansonForm_finite_coordinates
             (canonicalRealKaltonPeckPresentation.coordinates w).2 n -
           (canonicalRealKaltonPeckPresentation.coordinates w).1 n *
             (canonicalRealKaltonPeckPresentation.coordinates z).2 n) := by
-  sorry
+  rfl
 
 /-- The Kalton--Swanson form transported to an arbitrary complete presented model.
 Blueprint label: `thm:ks-transport`; audit ID `EXT-KS-STRONG`. -/
@@ -797,7 +852,7 @@ theorem transportedKaltonSwansonForm_apply {X : Type*} [NormedAddCommGroup X]
       canonicalKaltonSwansonForm.toDual
         (presentationEquiv hX canonicalRealKaltonPeckPresentation x)
         (presentationEquiv hX canonicalRealKaltonPeckPresentation y) := by
-  sorry
+  rfl
 
 /-- A successive normalized block sequence of finitely supported real `ℓ₂` vectors.
 Blueprint label: `thm:block-primary`; audit ID `RES-BLOCK-OPERATOR-IDENTITIES`. -/
@@ -925,6 +980,11 @@ private def rawBlockTransform_smul (w : ℕ → ℕ → ℝ) (a : ℝ)
   · simp [rawBlockTransform, hk, mul_assoc]
   · simp [rawBlockTransform, hk]
 
+private lemma rawBlockTransform_zero (w : ℕ → ℕ → ℝ) :
+    rawBlockTransform w 0 = 0 := by
+  funext k
+  simp [rawBlockTransform]
+
 private def rawBlockTransform_sub (w : ℕ → ℕ → ℝ) (x y : ℕ → ℝ) :
     rawBlockTransform w (x - y) = rawBlockTransform w x - rawBlockTransform w y := by
   rw [sub_eq_add_neg, rawBlockTransform_add]
@@ -1006,6 +1066,45 @@ private def rawBlockCorrection_smul (w : ℕ → ℕ → ℝ) (a : ℝ)
   by_cases hk : HasActiveBlock w k
   · simp [rawBlockCorrection, hk, mul_assoc]
   · simp [rawBlockCorrection, hk]
+
+private lemma rawBlockCorrection_zero (w : ℕ → ℕ → ℝ) :
+    rawBlockCorrection w 0 = 0 := by
+  funext k
+  simp [rawBlockCorrection]
+
+private lemma rawBlockTransform_standardBasis (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (n : ℕ) :
+    rawBlockTransform w (standardBasisSequence n) = w n := by
+  funext k
+  by_cases hk : HasActiveBlock w k
+  · rw [rawBlockTransform, dif_pos hk]
+    by_cases hindex : activeBlockIndex w k = n
+    · simp [standardBasisSequence, hindex]
+    · have hwn : w n k = 0 := by
+        by_contra hn
+        exact hindex (activeBlockIndex_eq w hw hn)
+      simp [standardBasisSequence, hindex, hwn]
+  · have hwn : w n k = 0 := by
+      by_contra hn
+      exact hk ⟨n, hn⟩
+    simp [rawBlockTransform, hk, hwn]
+
+private lemma rawBlockCorrection_standardBasis (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (n : ℕ) :
+    rawBlockCorrection w (standardBasisSequence n) = centralizer (w n) := by
+  funext k
+  by_cases hk : HasActiveBlock w k
+  · rw [rawBlockCorrection, dif_pos hk]
+    by_cases hindex : activeBlockIndex w k = n
+    · simp [standardBasisSequence, hindex]
+    · have hwn : w n k = 0 := by
+        by_contra hn
+        exact hindex (activeBlockIndex_eq w hw hn)
+      simp [standardBasisSequence, centralizer, hindex, hwn]
+  · have hwn : w n k = 0 := by
+      by_contra hn
+      exact hk ⟨n, hn⟩
+    simp [rawBlockCorrection, centralizer, hk, hwn]
 
 private def l2Norm_ne_zero_of_apply_ne_zero (x : ℕ → ℝ) (hx : IsSquareSummable x)
     {n : ℕ} (hn : x n ≠ 0) : l2Norm x ≠ 0 := by
@@ -1205,6 +1304,206 @@ def canonicalBlockOperator (w : ℕ → ℕ → ℝ)
     _ ≤ C * (‖z‖ / c) := mul_le_mul_of_nonneg_left hq hdata.2.1.le
     _ = (C / c) * ‖z‖ := by ring
 
+/-- The Hilbert-space isometry induced by a successive normalized block family.
+Blueprint support for `thm:block-primary`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+def canonicalL2BlockEmbedding (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) : CanonicalL2 →L[ℝ] CanonicalL2 :=
+  (blockIsometry w hw).toContinuousLinearMap
+
+/-- A canonical Hilbert block embedding preserves norms.
+Blueprint support for `thm:block-primary`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2BlockEmbedding_norm (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (x : CanonicalL2) :
+    ‖canonicalL2BlockEmbedding w hw x‖ = ‖x‖ := by
+  exact (blockIsometry w hw).norm_map x
+
+/-- A canonical Hilbert block embedding is injective.
+Blueprint support for `thm:block-primary`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2BlockEmbedding_injective (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) :
+    Function.Injective (canonicalL2BlockEmbedding w hw) := by
+  exact (blockIsometry w hw).injective
+
+/-- A Hilbert block embedding sends the standard unit vector to the corresponding block.
+Blueprint support for `thm:block-primary`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalL2BlockEmbedding_single_apply (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (n k : ℕ) :
+    canonicalL2BlockEmbedding w hw (lp.single 2 n 1) k = w n k := by
+  have h :=
+    (blocksOrthonormal w hw).orthogonalFamily.linearIsometry_apply_single
+      (i := n) (1 : ℝ)
+  have hv :
+      blockIsometry w hw (lp.single 2 n 1) = blockL2 w hw n := by
+    simpa only [blockIsometry, LinearIsometry.toSpanSingleton_apply, one_smul] using h
+  exact congrArg (fun x : L2 ↦ x k) hv
+
+private lemma canonicalBlockOperator_coordinates (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (z : CanonicalRealKaltonPeck) :
+    canonicalRealKaltonPeckPresentation.coordinates (canonicalBlockOperator w hw z) =
+      blockTargetPair w (canonicalRealKaltonPeckPresentation.coordinates z) :=
+  blockTargetVector_coordinates w hw z
+
+/-- Canonical block operators intertwine the canonical inclusion and the Hilbert block isometry.
+Blueprint support for `thm:block-primary`; audit ID `EXT-CGP-UPPER-SEMI-PRIMARY`. -/
+theorem canonicalBlockOperator_inclusion (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) :
+    (canonicalBlockOperator w hw).comp canonicalL2Inclusion =
+      canonicalL2Inclusion.comp (canonicalL2BlockEmbedding w hw) := by
+  apply ContinuousLinearMap.ext
+  intro x
+  apply canonicalRealKaltonPeckPresentation.coordinates_injective
+  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    canonicalBlockOperator_coordinates, canonicalL2Inclusion_coordinates,
+    canonicalL2Inclusion_coordinates]
+  apply Prod.ext
+  · change
+      (rawBlockTransform w (fun n ↦ x n) + rawBlockCorrection w 0) =
+      fun n ↦ canonicalL2BlockEmbedding w hw x n
+    rw [rawBlockCorrection_zero, add_zero]
+    rw [rawBlockTransform_eq_isometry w hw (fun n ↦ x n)
+      (fromL2SquareSummable x)]
+    rfl
+  · exact rawBlockTransform_zero w
+
+private lemma squareSummable_of_finite_support (x : ℕ → ℝ)
+    (hx : Set.Finite {n | x n ≠ 0}) : IsSquareSummable x := by
+  apply summable_of_hasFiniteSupport
+  rw [Function.HasFiniteSupport]
+  exact hx.subset (by simp)
+
+private lemma mul_summable_of_squareSummable (x y : ℕ → ℝ)
+    (hx : IsSquareSummable x) (hy : IsSquareSummable y) :
+    Summable (fun n ↦ x n * y n) := by
+  change Summable (fun n ↦ inner ℝ (toL2 y hy n) (toL2 x hx n))
+  exact lp.summable_inner _ _
+
+private lemma rawBlockTransform_inner (w : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w) (x y : ℕ → ℝ)
+    (hx : IsSquareSummable x) (hy : IsSquareSummable y) :
+    (∑' k, rawBlockTransform w x k * rawBlockTransform w y k) =
+      ∑' n, x n * y n := by
+  have h := (blockIsometry w hw).inner_map_map (toL2 x hx) (toL2 y hy)
+  rw [lp.inner_eq_tsum, lp.inner_eq_tsum] at h
+  rw [← rawBlockTransform_eq_isometry w hw x hx,
+    ← rawBlockTransform_eq_isometry w hw y hy] at h
+  simpa only [RCLike.inner_apply, conj_trivial, toL2, mul_comm] using h
+
+private lemma canonicalPairing_blockTargetPair_of_finite
+    (w : ℕ → ℕ → ℝ) (hw : IsSuccessiveNormalizedBlockSequence w)
+    (p q : (ℕ → ℝ) × (ℕ → ℝ))
+    (hp : IsFiniteCoordinatePair p) (hq : IsFiniteCoordinatePair q) :
+    canonicalPairing (blockTargetPair w p) (blockTargetPair w q) =
+      canonicalPairing p q := by
+  have hp1 := squareSummable_of_finite_support p.1 hp.1
+  have hp2 := squareSummable_of_finite_support p.2 hp.2
+  have hq1 := squareSummable_of_finite_support q.1 hq.1
+  have hq2 := squareSummable_of_finite_support q.2 hq.2
+  have hBp1 := rawBlockTransform_squareSummable w hw p.1 hp1
+  have hBp2 := rawBlockTransform_squareSummable w hw p.2 hp2
+  have hBq1 := rawBlockTransform_squareSummable w hw q.1 hq1
+  have hBq2 := rawBlockTransform_squareSummable w hw q.2 hq2
+  have hsB1 := mul_summable_of_squareSummable _ _ hBp1 hBq2
+  have hsB2 := mul_summable_of_squareSummable _ _ hBq1 hBp2
+  have hs1 := mul_summable_of_squareSummable _ _ hp1 hq2
+  have hs2 := mul_summable_of_squareSummable _ _ hq1 hp2
+  rw [canonicalPairing, canonicalPairing]
+  calc
+    (∑' k, canonicalPairingTerm (blockTargetPair w p) (blockTargetPair w q) k) =
+        ∑' k, (rawBlockTransform w p.1 k * rawBlockTransform w q.2 k -
+          rawBlockTransform w q.1 k * rawBlockTransform w p.2 k) := by
+      apply tsum_congr
+      intro k
+      by_cases hk : HasActiveBlock w k
+      · simp [canonicalPairingTerm, blockTargetPair, rawBlockTransform,
+          rawBlockCorrection, hk]
+        ring
+      · simp [canonicalPairingTerm, blockTargetPair, rawBlockTransform,
+          rawBlockCorrection, hk]
+    _ = (∑' k, rawBlockTransform w p.1 k * rawBlockTransform w q.2 k) -
+        ∑' k, rawBlockTransform w q.1 k * rawBlockTransform w p.2 k :=
+      hsB1.tsum_sub hsB2
+    _ = (∑' n, p.1 n * q.2 n) - ∑' n, q.1 n * p.2 n := by
+      rw [rawBlockTransform_inner w hw p.1 q.2 hp1 hq2,
+        rawBlockTransform_inner w hw q.1 p.2 hq1 hp2]
+    _ = ∑' n, (p.1 n * q.2 n - q.1 n * p.2 n) :=
+      (hs1.tsum_sub hs2).symm
+    _ = ∑' n, canonicalPairingTerm p q n := by
+      apply tsum_congr
+      intro n
+      rfl
+
+private lemma canonicalPairing_blockTargetPair_disjoint
+    (w v : ℕ → ℕ → ℝ) (hdisjoint : AreMutuallySupportDisjoint w v)
+    (p q : (ℕ → ℝ) × (ℕ → ℝ)) :
+    canonicalPairing (blockTargetPair w p) (blockTargetPair v q) = 0 := by
+  rw [canonicalPairing]
+  have hzero :
+      canonicalPairingTerm (blockTargetPair w p) (blockTargetPair v q) = 0 := by
+    funext k
+    by_cases hwk : HasActiveBlock w k
+    · have hvk : ¬HasActiveBlock v k := by
+        rintro ⟨m, hvm⟩
+        obtain ⟨n, hwn⟩ := hwk
+        exact Set.disjoint_left.1 (hdisjoint n m) hwn hvm
+      simp [canonicalPairingTerm, blockTargetPair, rawBlockTransform, rawBlockCorrection, hvk]
+    · simp [canonicalPairingTerm, blockTargetPair, rawBlockTransform, rawBlockCorrection, hwk]
+  rw [hzero]
+  exact tsum_zero
+
+private lemma canonicalBlockOperator_preserves_form
+    (w : ℕ → ℕ → ℝ) (hw : IsSuccessiveNormalizedBlockSequence w)
+    (z z' : CanonicalRealKaltonPeck) :
+    canonicalKaltonSwansonForm.toDual (canonicalBlockOperator w hw z)
+        (canonicalBlockOperator w hw z') =
+      canonicalKaltonSwansonForm.toDual z z' := by
+  let D : Set CanonicalRealKaltonPeck :=
+    {x | IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates x)}
+  have hD : Dense D := canonicalKaltonPeckBanach.2.2.2
+  have hfinite : ∀ x ∈ D, ∀ y ∈ D,
+      canonicalKaltonSwansonForm.toDual (canonicalBlockOperator w hw x)
+          (canonicalBlockOperator w hw y) =
+        canonicalKaltonSwansonForm.toDual x y := by
+    intro x hx y hy
+    change canonicalPairing
+        (canonicalRealKaltonPeckPresentation.coordinates (canonicalBlockOperator w hw x))
+        (canonicalRealKaltonPeckPresentation.coordinates (canonicalBlockOperator w hw y)) =
+      canonicalPairing (canonicalRealKaltonPeckPresentation.coordinates x)
+        (canonicalRealKaltonPeckPresentation.coordinates y)
+    rw [canonicalBlockOperator_coordinates w hw x,
+      canonicalBlockOperator_coordinates w hw y]
+    exact canonicalPairing_blockTargetPair_of_finite w hw _ _ hx hy
+  apply eqOn_closure₂' hfinite
+  · intro x
+    exact (canonicalKaltonSwansonForm.toDual
+      (canonicalBlockOperator w hw x)).continuous.comp
+        (canonicalBlockOperator w hw).continuous
+  · intro y
+    exact Continuous.clm_apply
+      (canonicalKaltonSwansonForm.toDual.continuous.comp
+        (canonicalBlockOperator w hw).continuous)
+      continuous_const
+  · intro x
+    exact (canonicalKaltonSwansonForm.toDual x).continuous
+  · intro y
+    exact Continuous.clm_apply canonicalKaltonSwansonForm.toDual.continuous continuous_const
+  · exact hD z
+  · exact hD z'
+
+private lemma canonicalBlockOperators_cross_form
+    (w v : ℕ → ℕ → ℝ)
+    (hw : IsSuccessiveNormalizedBlockSequence w)
+    (hv : IsSuccessiveNormalizedBlockSequence v)
+    (hdisjoint : AreMutuallySupportDisjoint w v)
+    (z z' : CanonicalRealKaltonPeck) :
+    canonicalKaltonSwansonForm.toDual (canonicalBlockOperator w hw z)
+      (canonicalBlockOperator v hv z') = 0 := by
+  change canonicalPairing
+      (canonicalRealKaltonPeckPresentation.coordinates (canonicalBlockOperator w hw z))
+      (canonicalRealKaltonPeckPresentation.coordinates (canonicalBlockOperator v hv z')) = 0
+  rw [canonicalBlockOperator_coordinates w hw z,
+    canonicalBlockOperator_coordinates v hv z']
+  exact canonicalPairing_blockTargetPair_disjoint w v hdisjoint _ _
+
 /-- The complete canonical normalized-block interface, including both cross-family identities.
 Blueprint label: `thm:block-primary`; audit IDs `EXT-K-BLOCK`,
 `RES-BLOCK-OPERATOR-IDENTITIES`, and `HID-EVEN-ODD-BLOCK-RELATIONS`. -/
@@ -1226,7 +1525,123 @@ theorem canonicalNormalizedBlock (w : ℕ → ℕ → ℝ)
           AreMutuallySupportDisjoint w v →
             canonicalKaltonSwansonForm.adjoint W * canonicalBlockOperator v hv = 0 ∧
               canonicalKaltonSwansonForm.adjoint (canonicalBlockOperator v hv) * W = 0 := by
-  sorry
+  let W := canonicalBlockOperator w hw
+  change
+    (∀ n, canonicalRealKaltonPeckPresentation.coordinates
+        (W (canonicalFirstBasisVector n)) = (w n, 0)) ∧
+      (∀ n, canonicalRealKaltonPeckPresentation.coordinates
+        (W (canonicalSecondBasisVector n)) = (centralizer (w n), w n)) ∧
+      Function.Injective W ∧
+      Submodule.ClosedComplemented W.range ∧
+      (∀ z z', canonicalKaltonSwansonForm.toDual (W z) (W z') =
+        canonicalKaltonSwansonForm.toDual z z') ∧
+      canonicalKaltonSwansonForm.adjoint W * W = 1 ∧
+      let P := W * canonicalKaltonSwansonForm.adjoint W
+      P ^ 2 = P ∧ P.range = W.range ∧
+        ∀ v (hv : IsSuccessiveNormalizedBlockSequence v),
+          AreMutuallySupportDisjoint w v →
+            canonicalKaltonSwansonForm.adjoint W * canonicalBlockOperator v hv = 0 ∧
+              canonicalKaltonSwansonForm.adjoint (canonicalBlockOperator v hv) * W = 0
+  have hfirst (n : ℕ) :
+      canonicalRealKaltonPeckPresentation.coordinates
+          (W (canonicalFirstBasisVector n)) = (w n, 0) := by
+    rw [show W = canonicalBlockOperator w hw by rfl,
+      canonicalBlockOperator_coordinates, (canonicalBasisCoordinates n).1]
+    change
+      (rawBlockTransform w (standardBasisSequence n) + rawBlockCorrection w 0,
+        rawBlockTransform w 0) = (w n, 0)
+    rw [rawBlockTransform_standardBasis w hw n, rawBlockCorrection_zero,
+      rawBlockTransform_zero]
+    simp
+  have hsecond (n : ℕ) :
+      canonicalRealKaltonPeckPresentation.coordinates
+          (W (canonicalSecondBasisVector n)) = (centralizer (w n), w n) := by
+    rw [show W = canonicalBlockOperator w hw by rfl,
+      canonicalBlockOperator_coordinates, (canonicalBasisCoordinates n).2]
+    change
+      (rawBlockTransform w 0 + rawBlockCorrection w (standardBasisSequence n),
+        rawBlockTransform w (standardBasisSequence n)) =
+          (centralizer (w n), w n)
+    rw [rawBlockTransform_zero, rawBlockCorrection_standardBasis w hw n,
+      rawBlockTransform_standardBasis w hw n]
+    simp
+  have hpreserves (z z' : CanonicalRealKaltonPeck) :
+      canonicalKaltonSwansonForm.toDual (W z) (W z') =
+        canonicalKaltonSwansonForm.toDual z z' := by
+    simpa [W] using canonicalBlockOperator_preserves_form w hw z z'
+  have hadjoint : canonicalKaltonSwansonForm.adjoint W * W = 1 := by
+    apply ContinuousLinearMap.ext
+    intro z
+    apply canonicalKaltonSwansonForm.toDual.injective
+    apply ContinuousLinearMap.ext
+    intro z'
+    change canonicalKaltonSwansonForm.toDual
+      (canonicalKaltonSwansonForm.adjoint W (W z)) z' =
+        canonicalKaltonSwansonForm.toDual z z'
+    rw [Forms.adjoint_apply]
+    exact hpreserves z z'
+  have hleft : Function.LeftInverse (canonicalKaltonSwansonForm.adjoint W) W := by
+    intro z
+    change (canonicalKaltonSwansonForm.adjoint W * W) z = z
+    rw [hadjoint]
+    rfl
+  have hclosed : Submodule.ClosedComplemented W.range :=
+    W.closedComplemented_range_of_leftInverse
+      (canonicalKaltonSwansonForm.adjoint W) hleft
+  have hprojection :
+      (W * canonicalKaltonSwansonForm.adjoint W) ^ 2 =
+        W * canonicalKaltonSwansonForm.adjoint W := by
+    simp only [pow_two]
+    rw [mul_assoc, ← mul_assoc (canonicalKaltonSwansonForm.adjoint W), hadjoint]
+    simp
+  have hprojectionRange :
+      (W * canonicalKaltonSwansonForm.adjoint W).range = W.range := by
+    apply le_antisymm
+    · rintro z ⟨x, rfl⟩
+      exact ⟨canonicalKaltonSwansonForm.adjoint W x, rfl⟩
+    · rintro z ⟨x, rfl⟩
+      refine ⟨W x, ?_⟩
+      change W (canonicalKaltonSwansonForm.adjoint W (W x)) = W x
+      rw [hleft x]
+  have hskew (x y : CanonicalRealKaltonPeck) :
+      canonicalKaltonSwansonForm.toDual x y =
+        -canonicalKaltonSwansonForm.toDual y x := by
+    have h := canonicalKaltonSwansonForm.alternating (x + y)
+    simp only [map_add, add_apply, canonicalKaltonSwansonForm.alternating,
+      add_zero, zero_add] at h
+    linarith
+  have hcross :
+      ∀ v (hv : IsSuccessiveNormalizedBlockSequence v),
+        AreMutuallySupportDisjoint w v →
+          canonicalKaltonSwansonForm.adjoint W * canonicalBlockOperator v hv = 0 ∧
+            canonicalKaltonSwansonForm.adjoint (canonicalBlockOperator v hv) * W = 0 := by
+    intro v hv hdisjoint
+    let V := canonicalBlockOperator v hv
+    have hcrossForm (x y : CanonicalRealKaltonPeck) :
+        canonicalKaltonSwansonForm.toDual (W x) (V y) = 0 := by
+      simpa [W, V] using
+        canonicalBlockOperators_cross_form w v hw hv hdisjoint x y
+    constructor
+    · change (canonicalKaltonSwansonForm.adjoint W).comp V = 0
+      apply ContinuousLinearMap.ext
+      intro x
+      apply canonicalKaltonSwansonForm.toDual.injective
+      apply ContinuousLinearMap.ext
+      intro y
+      simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero]
+      rw [Forms.adjoint_apply, hskew, hcrossForm]
+      exact neg_zero
+    · change (canonicalKaltonSwansonForm.adjoint V).comp W = 0
+      apply ContinuousLinearMap.ext
+      intro x
+      apply canonicalKaltonSwansonForm.toDual.injective
+      apply ContinuousLinearMap.ext
+      intro y
+      simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero]
+      rw [Forms.adjoint_apply]
+      exact hcrossForm x y
+  refine ⟨hfirst, hsecond, hleft.injective, hclosed, hpreserves, hadjoint, ?_⟩
+  exact ⟨hprojection, hprojectionRange, hcross⟩
 
 /-- The block operator conjugated to an arbitrary complete presented model.
 Blueprint label: `thm:block-transport`; audit ID `RES-BLOCK-OPERATOR-IDENTITIES`. -/
@@ -1260,7 +1675,127 @@ theorem transportedNormalizedBlock {X : Type*} [NormedAddCommGroup X] [NormedSpa
                 transportedBlockOperator hX v hv = 0 ∧
               (transportedKaltonSwansonForm hX).adjoint
                   (transportedBlockOperator hX v hv) * W = 0 := by
-  sorry
+  let e := presentationEquiv hX canonicalRealKaltonPeckPresentation
+  let W := transportedBlockOperator hX w hw
+  let Wc := canonicalBlockOperator w hw
+  change
+    (∀ x, e (W x) = Wc (e x)) ∧
+      Function.Injective W ∧
+      Submodule.ClosedComplemented W.range ∧
+      (∀ x y, (transportedKaltonSwansonForm hX).toDual (W x) (W y) =
+        (transportedKaltonSwansonForm hX).toDual x y) ∧
+      (transportedKaltonSwansonForm hX).adjoint W * W = 1 ∧
+      let P := W * (transportedKaltonSwansonForm hX).adjoint W
+      P ^ 2 = P ∧ P.range = W.range ∧
+        ∀ v (hv : IsSuccessiveNormalizedBlockSequence v),
+          AreMutuallySupportDisjoint w v →
+            (transportedKaltonSwansonForm hX).adjoint W *
+                transportedBlockOperator hX v hv = 0 ∧
+              (transportedKaltonSwansonForm hX).adjoint
+                  (transportedBlockOperator hX v hv) * W = 0
+  have hintertwine (x : X) : e (W x) = Wc (e x) := by
+    change e (e.symm (Wc (e x))) = Wc (e x)
+    exact e.apply_symm_apply _
+  have hcan := canonicalNormalizedBlock w hw
+  dsimp only at hcan
+  have hcanPreserves := hcan.2.2.2.2.1
+  have hpreserves (x y : X) :
+      (transportedKaltonSwansonForm hX).toDual (W x) (W y) =
+        (transportedKaltonSwansonForm hX).toDual x y := by
+    rw [transportedKaltonSwansonForm_apply, transportedKaltonSwansonForm_apply]
+    rw [hintertwine x, hintertwine y]
+    exact hcanPreserves (e x) (e y)
+  have hadjoint : (transportedKaltonSwansonForm hX).adjoint W * W = 1 := by
+    apply ContinuousLinearMap.ext
+    intro x
+    apply (transportedKaltonSwansonForm hX).toDual.injective
+    apply ContinuousLinearMap.ext
+    intro y
+    change (transportedKaltonSwansonForm hX).toDual
+      ((transportedKaltonSwansonForm hX).adjoint W (W x)) y =
+        (transportedKaltonSwansonForm hX).toDual x y
+    rw [Forms.adjoint_apply]
+    exact hpreserves x y
+  have hleft :
+      Function.LeftInverse ((transportedKaltonSwansonForm hX).adjoint W) W := by
+    intro x
+    change ((transportedKaltonSwansonForm hX).adjoint W * W) x = x
+    rw [hadjoint]
+    rfl
+  have hclosed : Submodule.ClosedComplemented W.range :=
+    W.closedComplemented_range_of_leftInverse
+      ((transportedKaltonSwansonForm hX).adjoint W) hleft
+  have hprojection :
+      (W * (transportedKaltonSwansonForm hX).adjoint W) ^ 2 =
+        W * (transportedKaltonSwansonForm hX).adjoint W := by
+    simp only [pow_two]
+    rw [mul_assoc,
+      ← mul_assoc ((transportedKaltonSwansonForm hX).adjoint W), hadjoint]
+    simp
+  have hprojectionRange :
+      (W * (transportedKaltonSwansonForm hX).adjoint W).range = W.range := by
+    apply le_antisymm
+    · rintro z ⟨x, rfl⟩
+      exact ⟨(transportedKaltonSwansonForm hX).adjoint W x, rfl⟩
+    · rintro z ⟨x, rfl⟩
+      refine ⟨W x, ?_⟩
+      change W ((transportedKaltonSwansonForm hX).adjoint W (W x)) = W x
+      rw [hleft x]
+  have hskew (x y : X) :
+      (transportedKaltonSwansonForm hX).toDual x y =
+        -(transportedKaltonSwansonForm hX).toDual y x := by
+    have h := (transportedKaltonSwansonForm hX).alternating (x + y)
+    simp only [map_add, add_apply, (transportedKaltonSwansonForm hX).alternating,
+      add_zero, zero_add] at h
+    linarith
+  have hcanCross := hcan.2.2.2.2.2.2.2.2
+  have hcross :
+      ∀ v (hv : IsSuccessiveNormalizedBlockSequence v),
+        AreMutuallySupportDisjoint w v →
+          (transportedKaltonSwansonForm hX).adjoint W *
+              transportedBlockOperator hX v hv = 0 ∧
+            (transportedKaltonSwansonForm hX).adjoint
+                (transportedBlockOperator hX v hv) * W = 0 := by
+    intro v hv hdisjoint
+    let V := transportedBlockOperator hX v hv
+    let Vc := canonicalBlockOperator v hv
+    have hintertwineV (x : X) : e (V x) = Vc (e x) := by
+      change e (e.symm (Vc (e x))) = Vc (e x)
+      exact e.apply_symm_apply _
+    have hcanonicalCross :
+        canonicalKaltonSwansonForm.adjoint Vc * Wc = 0 := by
+      simpa [Wc, Vc] using (hcanCross v hv hdisjoint).2
+    have hcrossForm (x y : X) :
+        (transportedKaltonSwansonForm hX).toDual (W x) (V y) = 0 := by
+      rw [transportedKaltonSwansonForm_apply, hintertwine x, hintertwineV y]
+      rw [← Forms.adjoint_apply]
+      have hz : canonicalKaltonSwansonForm.adjoint Vc (Wc (e x)) = 0 := by
+        change (canonicalKaltonSwansonForm.adjoint Vc * Wc) (e x) = 0
+        rw [hcanonicalCross]
+        rfl
+      rw [hz]
+      simp
+    constructor
+    · change ((transportedKaltonSwansonForm hX).adjoint W).comp V = 0
+      apply ContinuousLinearMap.ext
+      intro x
+      apply (transportedKaltonSwansonForm hX).toDual.injective
+      apply ContinuousLinearMap.ext
+      intro y
+      simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero]
+      rw [Forms.adjoint_apply, hskew, hcrossForm]
+      exact neg_zero
+    · change ((transportedKaltonSwansonForm hX).adjoint V).comp W = 0
+      apply ContinuousLinearMap.ext
+      intro x
+      apply (transportedKaltonSwansonForm hX).toDual.injective
+      apply ContinuousLinearMap.ext
+      intro y
+      simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero]
+      rw [Forms.adjoint_apply]
+      exact hcrossForm x y
+  refine ⟨hintertwine, hleft.injective, hclosed, hpreserves, hadjoint, ?_⟩
+  exact ⟨hprojection, hprojectionRange, hcross⟩
 
 end
 

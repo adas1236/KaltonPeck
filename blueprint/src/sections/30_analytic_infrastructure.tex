@@ -13,6 +13,7 @@ and
 \]
 \uses{def:fredholm-rank}
 \lean{KaltonPeck.Support.Fredholm.quotientKernelRangeEquiv, KaltonPeck.Support.Fredholm.quotientKernelRangeEquiv_apply_mk, KaltonPeck.Support.Fredholm.quotientKernelRange}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -20,6 +21,87 @@ Send the class of $x$ to $Ax$. This is well-defined because two representatives 
 element of the kernel. It is injective by the same observation and surjective by the definition
 of the range. Continuity of $A$ makes its kernel closed. Transporting finite-dimensionality and
 dimension through the isomorphism gives the last assertion.
+\end{proof}
+
+\begin{definition}[Strictly singular operator]\label{def:strictly-singular}
+Let $X$ and $Y$ be normed spaces.  A bounded operator $T:X\to Y$ is
+\emph{strictly singular} if, for every infinite-dimensional Banach space $Z$ and every
+bounded-below operator $S:Z\to X$, the composite $TS$ is not bounded below.
+\lean{KaltonPeck.Support.StrictlySingular.IsStrictlySingular}
+\leanok
+\end{definition}
+
+\begin{lemma}[Strictly singular ideal and Hilbert-adjoint calculus]
+\label{lem:strictly-singular-comp}
+If $T:X\to Y$ is strictly singular and $R:Y\to Z$ and $S:W\to X$ are bounded, then
+$RT$ and $TS$ are strictly singular.  Over the real scalars, sums, scalar multiples, and
+negatives of strictly singular operators are strictly singular.  If $T$ acts between real
+Hilbert spaces, then $T$ is strictly singular if and only if its Hilbert-space adjoint $T^*$ is
+strictly singular.
+\uses{def:strictly-singular}
+\lean{KaltonPeck.Support.StrictlySingular.IsStrictlySingular.postcomp, KaltonPeck.Support.StrictlySingular.IsStrictlySingular.precomp, KaltonPeck.Support.StrictlySingular.IsStrictlySingular.add, KaltonPeck.Support.StrictlySingular.IsStrictlySingular.smul, KaltonPeck.Support.StrictlySingular.IsStrictlySingular.neg, KaltonPeck.Support.StrictlySingular.IsStrictlySingular.hilbert_adjoint, KaltonPeck.Support.StrictlySingular.isStrictlySingular_hilbert_adjoint_iff}
+\leanok
+\end{lemma}
+
+\begin{proof}
+If $RT$ were bounded below on an embedded infinite-dimensional Banach space, boundedness of $R$
+would force $T$ to be bounded below there.  Likewise, if $TS$ were bounded below after a further
+embedding, boundedness of $T$ would first force the corresponding composite through $S$ to be
+bounded below, contradicting strict singularity of $T$.  For additive closure, select a
+biorthogonal basic sequence on which one summand has summably small weighted images.  On a far
+enough tail, bounded-below control of the sum would force the other summand to be bounded below,
+again a contradiction.  Scalar closure follows from composition.  Finally, the Hilbert adjoint
+identity and Cauchy--Schwarz turn a lower bound for $T^*$ on a subspace into a lower bound for
+$T$ on its image; applying this twice gives the equivalence.
+\end{proof}
+
+\begin{lemma}[Compact operators are strictly singular]\label{lem:compact-strictly-singular}
+Every compact bounded operator is strictly singular.
+\uses{def:strictly-singular}
+\lean{KaltonPeck.Support.StrictlySingular.isStrictlySingular_of_isCompactOperator}
+\leanok
+\end{lemma}
+
+\begin{proof}
+If $TS$ were compact and bounded below on an infinite-dimensional Banach space $Z$, then it would
+be a closed embedding.  Pulling a compact neighbourhood in its image back along $TS$ would give a
+compact neighbourhood of zero in $Z$.  Thus $Z$ would be locally compact and hence
+finite-dimensional, a contradiction.
+\end{proof}
+
+\begin{lemma}[Strict singularity and compactness on the canonical Hilbert space]
+\label{lem:canonical-hilbert-strictly-singular-compact}
+A bounded operator $H:\ell_2\to\ell_2$ is strictly singular if and only if it is compact.
+\uses{def:strictly-singular,lem:compact-strictly-singular}
+\lean{KaltonPeck.Support.StrictlySingular.canonicalL2_isCompact_of_isStrictlySingular, KaltonPeck.Support.StrictlySingular.isStrictlySingular_of_isCompactOperator}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Only the forward implication needs proof.  If no finite-dimensional subspace had an orthogonal
+complement on which $H$ had arbitrarily small norm, one could recursively choose orthonormal
+vectors $(v_n)$ such that the vectors $(Hv_n)$ were mutually orthogonal and uniformly bounded
+away from zero.  The resulting orthogonal-coordinate maps would exhibit an
+infinite-dimensional subspace on which $H$ is bounded below, contradicting strict singularity.
+Thus, for every $\varepsilon>0$, composition with a finite-dimensional orthogonal projection
+approximates $H$ in operator norm within $\varepsilon$.  These approximants are compact, and
+compact operators are closed in operator norm.
+\end{proof}
+
+\begin{lemma}[Upper semi-Fredholm operators are not strictly singular]
+\label{lem:upper-semi-not-strictly-singular}
+Let $X$ and $Y$ be real or complex Banach spaces, with $X$ infinite-dimensional.  If
+$A:X\to Y$ has finite-dimensional kernel and closed range, then $A$ is not strictly singular.
+\uses{def:strictly-singular}
+\lean{KaltonPeck.Support.StrictlySingular.not_isStrictlySingular_of_finiteDimensional_ker_of_isClosed_range, KaltonPeck.Support.GraphFredholm.IsUpperSemiFredholm.not_isStrictlySingular}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Choose a closed complement $Z$ of the finite-dimensional kernel.  The space $Z$ remains
+infinite-dimensional.  The restriction $A|_Z$ is injective, has the same closed range as $A$, and
+is therefore bounded below.  Thus $A$ is bounded below after precomposition with the inclusion
+$Z\hookrightarrow X$, contradicting strict singularity.
 \end{proof}
 
 \begin{lemma}[Continuous double annihilator]\label{lem:double-annihilator}
@@ -32,6 +114,7 @@ Then
   W=\{x\in X:f(x)=0\text{ for every }f\in\Ann(W)\}.
 \]
 \lean{KaltonPeck.Support.Forms.continuousAnnihilator, KaltonPeck.Support.Forms.continuousDoubleAnnihilator}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -51,6 +134,7 @@ continuous linear isomorphism
   \qquad \varphi\longmapsto\varphi\circ q.
 \]
 \lean{KaltonPeck.Support.Forms.quotientDualEquivAnnihilator, KaltonPeck.Support.Forms.quotientDualEquivAnnihilator_apply}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -65,6 +149,7 @@ pullback to a continuous linear isomorphism.
 Every strong symplectic Banach space is reflexive.
 \uses{def:strong-form,def:transpose-adjoint}
 \lean{KaltonPeck.Support.Forms.strongSymplecticTransposeInclusion, KaltonPeck.Support.Forms.strongSymplecticReflexive}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -90,6 +175,7 @@ For bounded operators $A,B$ on a strong symplectic Banach space and $a\in\R$,
 \]
 \uses{def:transpose-adjoint,lem:strong-reflexive}
 \lean{KaltonPeck.Support.Forms.adjoint_one, KaltonPeck.Support.Forms.adjoint_add, KaltonPeck.Support.Forms.adjoint_smul, KaltonPeck.Support.Forms.adjoint_mul, KaltonPeck.Support.Forms.adjoint_involutive, KaltonPeck.Support.Forms.adjoint_apply}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -120,6 +206,7 @@ closed; hence it has finite-dimensional kernel and closed range.
 \end{enumerate}
 \uses{def:fredholm-rank}
 \lean{KaltonPeck.Support.Fredholm.isFredholm_equiv_comp, KaltonPeck.Support.Fredholm.kernelEquivOfEquivComp, KaltonPeck.Support.Fredholm.cokernelEquivOfEquivComp, KaltonPeck.Support.Fredholm.nullity_equiv_comp, KaltonPeck.Support.Fredholm.cokernelFinrank_equiv_comp, KaltonPeck.Support.Fredholm.fredholmIndex_equiv_comp, KaltonPeck.Support.Fredholm.fredholm_smul, KaltonPeck.Support.Fredholm.ker_comp_of_injective, KaltonPeck.Support.Fredholm.isFredholm_comp, KaltonPeck.Support.Fredholm.fredholmIndex_comp, KaltonPeck.Support.Fredholm.leftInverseKernelRange}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -168,6 +255,7 @@ $N=\ker S$, then $S$ has Fredholm index zero and
 \]
 \uses{def:transpose-adjoint,def:fredholm-rank,lem:double-annihilator,lem:quotient-dual}
 \lean{KaltonPeck.Support.Fredholm.skewFredholmRange}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -196,6 +284,7 @@ $V\to V^*$ has even rank. Consequently,
   \dim\rad c\equiv\dim V\pmod2.
 \]
 \lean{KaltonPeck.Support.FiniteParity.finiteAlternatingRankEven, KaltonPeck.Support.FiniteParity.finiteContinuousAlternatingRankEven}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -219,6 +308,7 @@ rank is even, and rank--nullity gives the congruence.
 If a finite-dimensional real vector space $V$ has an endomorphism $J$ with $J^2=-I$, then
 $\dim_{\R} V$ is even.
 \lean{KaltonPeck.Support.FiniteParity.finiteComplexDimensionEven, KaltonPeck.Support.FiniteParity.finiteContinuousComplexDimensionEven, KaltonPeck.Support.FiniteParity.finiteInvariantSubmoduleComplexDimensionEven}
+\leanok
 \end{lemma}
 
 \begin{proof}

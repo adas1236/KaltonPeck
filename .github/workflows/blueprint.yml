@@ -16,8 +16,6 @@ permissions:
   contents: read          # Read access to repository contents
   pages: write            # Write access to GitHub Pages
   id-token: write         # Write access to ID tokens
-  issues: write           # Write access to issues
-  pull-requests: write    # Write access to pull requests
 
 jobs:
   build_project:
@@ -50,5 +48,8 @@ jobs:
       - name: Compile blueprint and documentation
         uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
         with:
+          api-docs: true
           blueprint: true
+          build-page: true
+          deploy: true
           homepage: home_page

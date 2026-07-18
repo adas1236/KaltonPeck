@@ -1,13 +1,13 @@
 \section{The bounded mod-\texorpdfstring{$2$}{2} path theorem}
 
 \begin{lemma}[Kernel complement and dual splitting]\label{lem:kernel-splitting}
-Let $S:X\to\strongdual X$ be the Fredholm operator induced by a continuous alternating form on a
-reflexive real Banach space, and put $F=\ker S$.  There is a closed complement $X=F\oplus Y$.
-Restriction and the bounded projections give
+Let $S:X\to\strongdual X$ be the Fredholm operator induced by a continuous alternating form on a reflexive
+real Banach space and put $F=\ker S$.  There is a closed complement $X=F\oplus Y$.  Restriction
+and the bounded projections give
 \[
-  \strongdual X=\Ann(Y)\oplus\Ann(F),\qquad \Ann(Y)\simeq\strongdual F,
+ \strongdual X=\Ann(Y)\oplus\Ann(F),\qquad \Ann(Y)\simeq\strongdual F,
 \]
-with continuous coordinate projections.  Moreover, $\ran S=\Ann(F)$, and the restriction
+with continuous coordinate projections.  Moreover $\ran S=\Ann(F)$, and the restriction
 $S|_Y:Y\to\Ann(F)$ is a continuous linear isomorphism.
 \uses{def:weak-form,lem:skew-fredholm-range}
 \lean{KaltonPeck.Support.PathParity.KernelSplittingData, KaltonPeck.Support.PathParity.kernelSplitting}
@@ -26,21 +26,23 @@ isomorphism.
 
 \begin{lemma}[Local Schur reduction]\label{lem:schur-reduction}
 Let $X$ be a real reflexive Banach space, let $J\subseteq\mathbb R$, let $t_0\in J$, and let
-$t\mapsto S_t:X\to\strongdual X$ be norm-continuous on $J$ in its subspace topology.  Suppose that
-every $S_t$ is induced by a continuous alternating form and that $S_{t_0}$ is Fredholm.  Using
-Lemma~\ref{lem:kernel-splitting}, write
+$t\mapsto S_t:X\to\strongdual X$ be norm-continuous
+on $J$ in its subspace topology, with every $S_t$ induced by a continuous alternating form and
+$S_{t_0}$ Fredholm.  Use
+Lemma~\ref{lem:kernel-splitting} to write
 \[
-  X=F\oplus Y,\qquad \strongdual X=\Ann(Y)\oplus\Ann(F),
-  \qquad F=\ker S_{t_0}.
+ X=F\oplus Y,\qquad \strongdual X=\Ann(Y)\oplus\Ann(F),
+ \qquad F=\ker S_{t_0}.
 \]
 For $t$ in a sufficiently small neighborhood of $t_0$ relative to $J$, there are a bounded
-injective linear map $m_t:F\to X$ and a continuous alternating form $c_t$ on $F$ such that
+injective linear map $m_t:F\to X$ and a continuous alternating form $c_t$ on $F$ such that the
+restriction of $m_t$ is a linear isomorphism
 \[
-  m_t:\rad c_t\simeq\ker S_t
+  m_t:\rad c_t\simeq\ker S_t.
 \]
-is a linear isomorphism.
 \uses{def:weak-form,lem:kernel-splitting}
 \lean{KaltonPeck.Support.PathParity.LocalSchurPointData, KaltonPeck.Support.PathParity.localSchurReduction}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -85,6 +87,7 @@ forms whose induced operators $S_t:X\to\strongdual X$ depend continuously on $t$
 norm.  If each $S_t$ is Fredholm, then $\dim\ker S_t$ is independent of $t$ modulo $2$.
 \uses{lem:schur-reduction,lem:finite-alt-even}
 \lean{KaltonPeck.Support.PathParity.mod2Path}
+\leanok
 \end{theorem}
 
 \begin{proof}

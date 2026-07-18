@@ -29,7 +29,7 @@ whose range is exactly the admissible pairs, together with constants $c,C>0$ suc
 \leanok
 \end{definition}
 
-\begin{lemma}[Normalization equivalence for the canonical model]
+\begin{lemma}[Normalization adapter for the canonical model]
 \label{lem:kp-normalization}
 For a square-summable real sequence $x$, put
 \[
@@ -39,17 +39,17 @@ with value zero when $x_n=0$.  Then
 \[
   \mathrm{KP}(x)=2K_0(x).
 \]
-Call a pair $(a,x)$ \emph{$K_0$-admissible} when
+Call a pair $(a,x)$ \,\emph{$K_0$-admissible} when
 \[
   a\in\ell_\infty,\qquad x\in\ell_2,
   \qquad a-K_0(x)\in\ell_2.
 \]
-The real-linear map on pairs of real sequences
+The ambient real-linear coordinate map on pairs of real sequences
 \[
   e_0(u,x)=(u/2,x)
 \]
-restricts to a bijection from the admissible pairs of Definition~\ref{def:kp-presentation} to the
-$K_0$-admissible pairs, with inverse $(a,x)\mapsto(2a,x)$.  If
+restricts to a bijection from the project-admissible pairs to the $K_0$-admissible pairs, with
+inverse $(a,x)\mapsto(2a,x)$.  If
 \[
   q_0(a,x)=\|a-K_0(x)\|_2+\|x\|_2,
 \]
@@ -64,6 +64,7 @@ and consequently
 \]
 \uses{def:kp-presentation}
 \lean{KaltonPeck.Support.Coordinates.k0Centralizer, KaltonPeck.Support.Coordinates.IsBoundedSequence, KaltonPeck.Support.Coordinates.IsK0AdmissiblePair, KaltonPeck.Support.Coordinates.k0QuasiNorm, KaltonPeck.Support.Coordinates.normalizationEquiv, KaltonPeck.Support.Coordinates.kpNormalization}
+\leanok
 \end{lemma}
 
 \begin{proof}
@@ -90,26 +91,38 @@ inequalities follow by comparing $\frac12A+B$ with $A+B$ for $A,B\geq0$.
 \end{proof}
 
 \begin{theorem}[Canonical Kalton--Peck Banach model]\label{thm:kp-canonical-banach}
-For the centralizer and quasi-norm of Definition~\ref{def:kp-presentation}, the admissible pairs are
-closed under coordinatewise real-linear operations, and $q$ is equivalent to a complete norm.
-Consequently there exists a complete real normed space $Z_2^{\mathrm{can}}$ whose coordinate map is
-a Kalton--Peck presentation.  In this model, the finite-coordinate pairs are dense.  Fix one such
-presented space for the remainder of the blueprint.
-\uses{def:kp-presentation,lem:kp-normalization}
-\lean{KaltonPeck.Support.Coordinates.IsFiniteCoordinatePair, KaltonPeck.Support.Coordinates.CanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedAddCommGroupCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instCompleteSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.canonicalRealKaltonPeckPresentation, KaltonPeck.Support.Coordinates.canonicalKaltonPeckBanach}
+For the exact centralizer and quasi-norm of Definition~\ref{def:kp-presentation}, the admissible
+pairs are closed under coordinatewise real-linear operations, and $q$ is equivalent to a complete
+norm.  Consequently there exists a complete real normed space $Z_2^{\mathrm{can}}$ whose coordinate
+map is a Kalton--Peck presentation.  In this model, the finite-coordinate pairs are dense.  Fix one
+such presented space for the remainder of the blueprint.  Its second-coordinate map
+$p:Z_2^{\mathrm{can}}\to\ell_2$ is a bounded surjection, while
+$i:\ell_2\to Z_2^{\mathrm{can}}$, $i(x)=(x,0)$, is a bounded injection satisfying
+$\ran i=\ker p$.  Both $\ell_2$ and $Z_2^{\mathrm{can}}$ are infinite-dimensional.
+\uses{def:kp-presentation}
+\lean{KaltonPeck.Support.Coordinates.IsFiniteCoordinatePair, KaltonPeck.Support.Coordinates.CanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedAddCommGroupCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instNormedSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.instCompleteSpaceCanonicalRealKaltonPeck, KaltonPeck.Support.Coordinates.canonicalRealKaltonPeckPresentation, KaltonPeck.Support.Coordinates.CanonicalL2, KaltonPeck.Support.Coordinates.canonicalL2Quotient, KaltonPeck.Support.Coordinates.canonicalL2Quotient_apply, KaltonPeck.Support.Coordinates.canonicalL2Quotient_surjective, KaltonPeck.Support.Coordinates.canonicalL2_not_finiteDimensional, KaltonPeck.Support.Coordinates.canonicalKaltonPeckBanach, KaltonPeck.Support.Symplectic.canonicalL2Inclusion, KaltonPeck.Support.Symplectic.canonicalL2Inclusion_coordinates, KaltonPeck.Support.Symplectic.canonicalL2Inclusion_injective, KaltonPeck.Support.Symplectic.canonicalRealKaltonPeck_not_finiteDimensional, KaltonPeck.Support.Symplectic.canonicalL2Inclusion_range}
+\leanok
 \end{theorem}
 
 \begin{proof}
-Section~3 of Castillo--Cuellar--Gonz\'alez--Pino \cite{CCGP} defines the canonical real
-Kalton--Peck model using $K_0$ and $q_0$ and states that $q_0$ is equivalent to a complete norm.
-The same section records the natural interleaved coordinate vectors as a Schauder basis, so their
-finite linear span is dense.
+Let $\pi$ be the second-coordinate map and let $D$ be the subspace of finite-coordinate admissible
+pairs.  Finite-support sequences are dense in $\ell_2$, by convergence of the coordinate partial
+sums.  Since $\ker\pi$ is linearly equivalent to $\ell_2$ through the first coordinate, with a
+bounded inverse, it follows that $\ker\pi\subseteq\overline D$.
 
-Transport that complete norm and the coordinate operations through the linear bijection $e_0^{-1}$
-from Lemma~\ref{lem:kp-normalization}.  The two-sided estimates in that lemma show that the
-transported norm is equivalent to $q$.  The resulting complete real normed space, with its chosen
-coordinates, is the required $Z_2^{\mathrm{can}}$.  Since $e_0^{-1}$ only rescales the
-first-coordinate basis vectors, it also transports density of finite-coordinate pairs.
+The section $s(x)=(\mathrm{KP}(x),x)$ satisfies $\pi s=\mathrm{id}$,
+$\|s(x)\|\leq4\|x\|_2$, and belongs to $D$ whenever $x$ has finite support.  Given $z$ and
+$\varepsilon>0$, choose such an $x$ with
+$\|\pi z-x\|_2<\varepsilon/8$.  Put $d=s(x)$,
+$c=s(\pi(z-d))$, and $k=z-d-c$.  Then $d\in D$, $k\in\ker\pi$, and
+$\|c\|<\varepsilon/2$.  Choose $e\in D$ with $\|k-e\|<\varepsilon/2$.  Hence
+$d+e\in D$ and
+\[
+  \|z-(d+e)\|\leq\|c\|+\|k-e\|<\varepsilon,
+\]
+which proves density.  The natural interleaved basis and its dense span agree with the source
+model of Kalton--Peck \cite[Theorem~4.10]{KP}, as recalled in
+Castillo--Cuellar--Gonz\'alez--Pino \cite[\S3]{CCGP}.
 \end{proof}
 
 \begin{theorem}[Equivalence of presented models]\label{thm:presentation-equivalence}
@@ -127,6 +140,7 @@ If $a_X,b_X,a_Y,b_Y>0$ are comparison constants for the two presentations, then
 \]
 \uses{def:kp-presentation}
 \lean{KaltonPeck.Support.Coordinates.AreComparisonConstants, KaltonPeck.Support.Coordinates.presentationEquiv, KaltonPeck.Support.Coordinates.presentationEquiv_spec}
+\leanok
 \end{theorem}
 
 \begin{proof}
@@ -141,8 +155,8 @@ and the symmetric calculation gives the inverse bound.  Thus $e$ is a bounded li
 \end{proof}
 
 \begin{theorem}[Canonical Kalton--Swanson form]\label{thm:ks-primary}
-Let $Z_{2,0}$ denote the published canonical model based on $K_0$, with strong form $\Omega_0$
-from Castillo--Cuellar--Gonz\'alez--Pino, Proposition~3.1.  Write
+Let $Z_{2,0}$ denote the published canonical model based on $K_0$, with strong form
+$\Omega_0$ from Castillo--Cuellar--Gonz\'alez--Pino, Proposition~3.1.  Write
 \[
   D_0:Z_{2,0}\longrightarrow\strongdual{Z_{2,0}},
   \qquad (D_0z)(w)=\Omega_0(z,w),
@@ -154,11 +168,11 @@ for its induced continuous linear isomorphism.  On finite coordinate vectors,
 and for arbitrary vectors this denotes its continuous extension, not a difference of two
 separately asserted convergent series.
 
-On the normalized canonical model define
+On the project-normalized canonical model define
 \[
   \Omega_{\mathrm{can}}(z,w)=2\Omega_0(e_0z,e_0w).
 \]
-Thus, when $z$ and $w$ have coordinates $(u,x)$ and $(v,y)$, respectively, the combined
+Thus, when $z$ and $w$ have project coordinates $(u,x)$ and $(v,y)$, respectively, the combined
 finite-coordinate expression is
 \[
   \Omega_{\mathrm{can}}(z,w)
@@ -171,6 +185,7 @@ Its induced map is
 where $e_0^*f=f\circ e_0$.  Hence $\Omega_{\mathrm{can}}$ is a continuous strong alternating form.
 \uses{thm:kp-canonical-banach,lem:kp-normalization,def:strong-form}
 \lean{KaltonPeck.Support.Symplectic.standardBasisSequence, KaltonPeck.Support.Symplectic.canonicalFirstBasisVector, KaltonPeck.Support.Symplectic.canonicalSecondBasisVector, KaltonPeck.Support.Symplectic.canonicalBasisCoordinates, KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm, KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm_finite_coordinates}
+\leanok
 \end{theorem}
 
 \begin{proof}
@@ -199,6 +214,7 @@ induced isomorphism is
 \]
 \uses{thm:ks-primary,thm:presentation-equivalence,def:strong-form}
 \lean{KaltonPeck.Support.Symplectic.transportedKaltonSwansonForm, KaltonPeck.Support.Symplectic.transportedKaltonSwansonForm_apply}
+\leanok
 \end{theorem}
 
 \begin{proof}
@@ -238,13 +254,19 @@ on $Z_2^{\mathrm{can}}$.  Then
 \]
 The operator $W_w$ is bounded and injective with complemented range, preserves
 $\Omega_{\mathrm{can}}$, and satisfies $W_w^+W_w=I$.  Moreover, $W_wW_w^+$ is a bounded projection
-onto $\ran W_w$.  If $(v_n)$ is another successive normalized block sequence whose supports are
-disjoint from all supports of the $w_n$, then
+onto $\ran W_w$.  The corresponding Hilbert-space block isometry $U_w:\ell_2\to\ell_2$ satisfies
+$U_we_n=w_n$ and intertwines the exact-sequence inclusion:
+\[
+  W_wi=iU_w.
+\]
+If $(v_n)$ is another successive normalized block sequence whose supports are disjoint from all
+supports of the $w_n$, then
 \[
   W_w^+W_v=0=W_v^+W_w.
 \]
 \uses{thm:kp-canonical-banach,lem:kp-normalization,thm:ks-primary}
-\lean{KaltonPeck.Support.Symplectic.IsSuccessiveNormalizedBlockSequence, KaltonPeck.Support.Symplectic.AreMutuallySupportDisjoint, KaltonPeck.Support.Symplectic.canonicalBlockOperator, KaltonPeck.Support.Symplectic.canonicalNormalizedBlock}
+\lean{KaltonPeck.Support.Symplectic.IsSuccessiveNormalizedBlockSequence, KaltonPeck.Support.Symplectic.AreMutuallySupportDisjoint, KaltonPeck.Support.Symplectic.canonicalBlockOperator, KaltonPeck.Support.Symplectic.canonicalL2BlockEmbedding, KaltonPeck.Support.Symplectic.canonicalL2BlockEmbedding_norm, KaltonPeck.Support.Symplectic.canonicalL2BlockEmbedding_injective, KaltonPeck.Support.Symplectic.canonicalL2BlockEmbedding_single_apply, KaltonPeck.Support.Symplectic.canonicalBlockOperator_inclusion, KaltonPeck.Support.Symplectic.canonicalNormalizedBlock}
+\leanok
 \end{theorem}
 
 \begin{proof}
@@ -305,17 +327,18 @@ successive normalized block sequence $(v_n)$ mutually support-disjoint from $(w_
 \]
 \uses{thm:block-primary,thm:presentation-equivalence,thm:ks-transport}
 \lean{KaltonPeck.Support.Symplectic.transportedBlockOperator, KaltonPeck.Support.Symplectic.transportedNormalizedBlock}
+\leanok
 \end{theorem}
 
 \begin{proof}
-Conjugation by the bounded linear isomorphism $e$ preserves boundedness, injectivity, complemented
-range, and the projection assertion.  Since
-$\Omega_X(x,y)=\Omega_{\mathrm{can}}(ex,ey)$, the definition of symplectic adjoint gives
-\[
-  \widetilde W_w^+=e^{-1}W_w^+e.
-\]
-Substitution transports form preservation, the two same-family identities, and both cross-family
-identities from Theorem~\ref{thm:block-primary}.
+The defining conjugation gives
+$e(\widetilde W_wx)=W_w(ex)$.  Transporting the canonical form-preservation identity through
+$\Omega_X(x,y)=\Omega_{\mathrm{can}}(ex,ey)$ shows that $\widetilde W_w$ preserves $\Omega_X$.
+Strongness and the defining adjoint equation then give
+$\widetilde W_w^+\widetilde W_w=I$.  Thus $\widetilde W_w^+$ is a bounded left inverse, which
+proves injectivity and complemented range; elementary operator algebra gives the projection and
+its range.  Finally, transporting the canonical cross-family identity and applying the adjoint
+equation (together with skew-symmetry) yields both cross-adjoint products.
 \end{proof}
 
 \begin{definition}[Upper semi-Fredholm]\label{def:upper-semi}
@@ -326,15 +349,526 @@ range is closed.
 \leanok
 \end{definition}
 
-\begin{theorem}[Canonical Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-primary}
-On $Z_2^{\mathrm{can}}$ with the canonical Kalton--Swanson form, let $A$ be a bounded operator.  If
-$\ker A$ is finite-dimensional and $\ran A$ is closed, then $A^+A$ is Fredholm.
-\uses{thm:ks-primary,def:upper-semi,def:fredholm-rank}
-\lean{KaltonPeck.Support.GraphFredholm.cgpPrimary}
+\begin{lemma}[Upper semi-Fredholm composition calculus]\label{lem:upper-semi-calculus}
+If $A:X\to Y$ and $B:Y\to Z$ are upper semi-Fredholm operators between real Banach spaces, then
+$BA$ is upper semi-Fredholm.
+\uses{def:upper-semi}
+\lean{KaltonPeck.Support.GraphFredholm.IsUpperSemiFredholm.comp}
+\leanok
+\end{lemma}
+
+\begin{proof}
+The kernel of $BA$ is finite-dimensional because it is an extension of a subspace of
+$\ker B$ by $\ker A$.  For closedness of the range, map the closed range of $A$ through the
+quotient map $Y\to\ran B$.  Its inverse image is $\ran A+\ker B$, which is closed because
+$\ker B$ is finite-dimensional.  The resulting closed subspace of $\ran B$ remains closed in
+$Z$.
+\end{proof}
+
+\begin{definition}[Infinite-dimensional compact restriction]
+\label{def:infinite-dimensional-compact-restriction}
+A bounded operator $T:X\to Y$ has an \emph{infinite-dimensional compact restriction} if there
+is a closed infinite-dimensional subspace $M\subseteq X$ such that $T|_M$ is compact.
+\lean{KaltonPeck.Support.GraphFredholm.HasInfiniteDimensionalCompactRestriction}
+\leanok
+\end{definition}
+
+\begin{lemma}[The infinite-kernel branch]\label{lem:infinite-kernel-compact-restriction}
+If $\ker T$ is infinite-dimensional, then $T$ has an infinite-dimensional compact restriction.
+\uses{def:infinite-dimensional-compact-restriction}
+\lean{KaltonPeck.Support.GraphFredholm.hasInfiniteDimensionalCompactRestriction_of_infiniteDimensional_kernel}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Take $M=\ker T$.  It is closed, and $T|_M=0$ is compact.
+\end{proof}
+
+\begin{lemma}[The nonclosed-range branch]\label{lem:nonclosed-range-approximate-kernel}
+Let $T:X\to Y$ have finite-dimensional kernel and nonclosed range.  There are a closed
+infinite-dimensional complement $Z$ of $\ker T$ and normalized vectors $z_n\in Z$ for which
+\[
+  \sum_n \lVert Tz_n\rVert<\infty .
+\]
+\uses{def:upper-semi}
+\lean{KaltonPeck.Support.GraphFredholm.exists_summableApproximateKernelSequence_of_finiteDimensional_ker}
+\leanok
+\end{lemma}
+
+\begin{proof}
+On a closed complement of the kernel, $T$ is injective but not bounded below.  Choose a
+nonzero vector on which its norm ratio is less than $2^{-n-1}$ and normalize it.  The geometric
+bound makes the image norms summable.  The complement must be infinite-dimensional, since a
+finite-dimensional domain would have closed image.
+\end{proof}
+
+\begin{lemma}[Failure of upper semi-Fredholmness]\label{lem:not-upper-semi-dichotomy}
+If $T$ is not upper semi-Fredholm, then either $T$ has an infinite-dimensional compact
+restriction or the summable normalized approximate-kernel sequence of
+Lemma~\ref{lem:nonclosed-range-approximate-kernel} exists on a closed kernel complement.
+\uses{def:upper-semi,def:infinite-dimensional-compact-restriction,lem:infinite-kernel-compact-restriction,lem:nonclosed-range-approximate-kernel}
+\lean{KaltonPeck.Support.GraphFredholm.compactRestriction_or_summableApproximateKernelSequence}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Split according to whether the kernel is finite-dimensional and apply the preceding two lemmas.
+Upgrading the second alternative to a compact restriction requires a basic-sequence selection
+theorem; that gliding-hump step is not part of this lemma.
+\end{proof}
+
+\begin{lemma}[Controlled approximation by the canonical kernel]
+\label{lem:canonical-kernel-approximation}
+If $q:X\to Y$ is a surjective bounded operator between Banach spaces, then some $C>0$ satisfies
+\[
+  \inf_{y\in\ker q}\lVert x-y\rVert\le C\lVert qx\rVert
+\]
+for every $x\in X$.  In particular this holds for the canonical quotient
+$p:Z_2^{\mathrm{can}}\to\ell_2$.
+\uses{thm:kp-canonical-banach}
+\lean{KaltonPeck.Support.GraphFredholm.exists_kernel_approximation_of_surjective, KaltonPeck.Support.GraphFredholm.canonicalL2Quotient_kernel_approximation}
+\leanok
+\end{lemma}
+
+\begin{proof}
+The open mapping theorem supplies a preimage $z$ of $qx$ with
+$\lVert z\rVert\le C\lVert qx\rVert$.  Then $x-z\in\ker q$, so $z$ is the required error.
+\end{proof}
+
+\begin{lemma}[Compact canonical block extraction]\label{lem:compact-canonical-block-extraction}
+Let $X$ be a real Banach space and $T:\ell_2\to X$ a bounded operator which is not upper
+semi-Fredholm.  There is a successive normalized finite-support block family $(w_n)$ such that
+\[
+  \sum_n\lVert TU_we_n\rVert<\infty.
+\]
+Consequently, the operator $TU_w$ is compact.
+\uses{def:upper-semi,thm:block-primary}
+\lean{KaltonPeck.Support.CgpBlockExtraction.exists_summable_canonicalL2Block_of_not_upperSemi, KaltonPeck.Support.CgpBlockExtraction.exists_compact_canonicalL2Block_of_not_upperSemi}
+\leanok
+\end{lemma}
+
+\begin{proof}
+For every finite coordinate head, $T$ fails to be bounded below on the orthogonal tail;
+otherwise the kernel embeds into the head and the range is the sum of a closed tail image and a
+finite-dimensional space.  Choose successively normalized tail vectors with geometrically small
+images, approximate them by finite truncations, and arrange disjoint support intervals.  The
+images of the standard basis under $TU_w$ then have summable norms.  Expanding $TU_w$ as a
+norm-convergent sum of rank-one maps proves compactness.
+\end{proof}
+
+\begin{lemma}[Hilbert gliding-hump approximation]\label{lem:hilbert-gliding-hump}
+Every infinite-dimensional subspace $M\subseteq\ell_2$ contains unit vectors $(y_n)$ which are
+summably close to a successive normalized finite-support block sequence $(w_n)$.  Every continuous
+functional on $\ell_2$ tends to zero along the standard unit-vector basis.  Moreover, every
+normalized coordinatewise-null sequence $(u_n)$ has a strictly increasing subsequence
+$(u_{\phi(n)})$ summably close to a successive normalized finite-support block sequence.
+In particular, all normalized signed averages of the first family $(y_n)$ are bounded uniformly by
+one plus the total approximation error.
+\uses{thm:block-primary}
+\lean{KaltonPeck.Support.HilbertGlidingHump.exists_summable_successiveBlock_approximation, KaltonPeck.Support.HilbertGlidingHump.tendsto_dual_canonicalL2Basis_zero, KaltonPeck.Support.HilbertGlidingHump.exists_summable_successiveBlock_subsequence_approximation, KaltonPeck.Support.HilbertGlidingHump.norm_signed_average_le_one_add_tsum_error, KaltonPeck.Support.HilbertGlidingHump.exists_successiveBlock_with_uniform_signed_average_bound}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Kill an arbitrary finite coordinate head inside $M$, truncate the resulting unit vector far
+enough out, normalize, and iterate on successive support intervals with geometric errors.  The
+exact block vectors are orthonormal, so the triangle inequality gives the signed-average bound.
+For the subsequence form, recursively pass far enough along the coordinatewise-null sequence that
+its finite coordinate head is small, truncate the tail, and normalize with geometrically summable
+errors.  The selected indices are strictly increasing and the truncation intervals are successive.
+The assertion about continuous functionals follows from the Riesz representation theorem and the
+fact that every square-summable coordinate sequence tends to zero.
+\end{proof}
+
+\begin{definition}[Bounded centralizer data]\label{def:bounded-centralizer-data}
+A bounded centralizer lift of $Q:Z\to\ell_2$ is a linear sequence-valued map whose difference
+from the Kalton--Peck centralizer of $Qz$ is square-summable with norm bounded by
+$C\lVert z\rVert$.  A bounded centralizer approximation on a subspace
+$M\subseteq\ell_2$ is the corresponding datum for the inclusion of $M$.
+\uses{thm:kp-canonical-banach}
+\lean{KaltonPeck.Support.GraphFredholm.HasBoundedCentralizerLift, KaltonPeck.Support.GraphFredholm.HasBoundedCentralizerApproximation}
+\leanok
+\end{definition}
+
+\begin{lemma}[Canonical quotient reduction]
+\label{lem:canonical-quotient-strictly-singular-reduction}
+Every bounded map $S:Z\to Z_2^{\mathrm{can}}$ gives a bounded centralizer lift of $pS$, where
+$p:Z_2^{\mathrm{can}}\to\ell_2$ is the canonical quotient.  Consequently, if no closed
+infinite-dimensional subspace of $\ell_2$ admits a bounded centralizer approximation, then $p$
+is strictly singular.
+\uses{thm:kp-canonical-banach,def:strictly-singular,def:bounded-centralizer-data}
+\lean{KaltonPeck.Support.GraphFredholm.hasBoundedCentralizerLift_canonicalL2Quotient_comp, KaltonPeck.Support.GraphFredholm.no_boundedCentralizerLift_of_subspace_obstruction, KaltonPeck.Support.GraphFredholm.canonicalL2Quotient_strictlySingular_of_centralizer_obstruction, KaltonPeck.Support.GraphFredholm.canonicalL2Quotient_strictlySingular_of_subspace_obstruction}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Take the first coordinate of $Sz$ as the linear lift.  Membership in the canonical model gives
+square-summability of its centralizer defect, and the norm comparison bounds that defect by
+$\lVert S\rVert\lVert z\rVert$.  If $Q$ is bounded below, its range is a closed
+infinite-dimensional Hilbert subspace and the inverse on that range transports the lift to a
+bounded centralizer approximation.  The asserted obstruction therefore rules out every
+bounded-below restriction of $p$.
+\end{proof}
+
+\begin{lemma}[Summable weighted Schauder images are compact]
+\label{lem:schauder-weighted-images-compact}
+Let $(x_n)$ be a Schauder basis of a Banach space $X$, with coordinate functionals $x_n^*$.
+If $T:X\to Y$ is bounded and
+\[
+  \sum_n \lVert x_n^*\rVert\lVert Tx_n\rVert<\infty,
+\]
+then $T$ is compact.
+\lean{KaltonPeck.Support.CgpBlockExtraction.compact_of_schauderBasis_weighted}
+\leanok
+\end{lemma}
+
+\begin{proof}
+The rank-one series $\sum_n x_n^*\otimes Tx_n$ converges in operator norm by the displayed
+bound.  Its partial sums are compact and its pointwise sum equals $T$ by the Schauder expansion,
+so closure of the compact operators in operator norm gives the result.
+\end{proof}
+
+\begin{lemma}[Basic-sequence compact-restriction bridge]
+\label{lem:basic-sequence-compact-restriction}
+If a bounded operator between Banach spaces is not upper semi-Fredholm, then it is compact on
+some closed infinite-dimensional subspace of its domain.
+\uses{def:upper-semi,def:infinite-dimensional-compact-restriction,lem:not-upper-semi-dichotomy,lem:schauder-weighted-images-compact}
+\lean{KaltonPeck.Support.GraphFredholm.exists_biorthogonal_sequence_summable_of_not_upper, KaltonPeck.Support.GraphFredholm.hasInfiniteDimensionalCompactRestriction_of_biorthogonal_weighted, KaltonPeck.Support.GraphFredholm.hasInfiniteDimensionalCompactRestriction_of_not_upper}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Recursively choose normalized vectors $x_n$ and continuous functionals $x_n^*$ with
+$x_i^*(x_j)=\delta_{ij}$, making
+\[
+  \sum_n \lVert x_n^*\rVert\lVert Tx_n\rVert
+\]
+finite.  At each stage the common kernel of the previously chosen functionals has finite
+codimension; a lower bound for $T$ there would force finite-dimensional kernel and closed range,
+so failure of upper semi-Fredholmness supplies the next small image.  The closed span of the
+$x_n$ is infinite-dimensional by biorthogonality.  On that span, the resulting rank-one
+expansion of $T$ is the norm limit of finite-rank operators, and hence is compact.
+\end{proof}
+
+\begin{theorem}[Canonical centralizer obstruction]
+\label{thm:canonical-centralizer-obstruction}
+No closed infinite-dimensional subspace of $\ell_2$ admits a bounded linear approximation to the
+Kalton--Peck centralizer.  Consequently the canonical quotient
+$p:Z_2^{\mathrm{can}}\to\ell_2$ is strictly singular.
+\uses{def:bounded-centralizer-data,lem:canonical-quotient-strictly-singular-reduction,lem:canonical-kernel-approximation,lem:hilbert-gliding-hump,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.no_boundedCentralizerApproximation, KaltonPeck.Support.GraphFredholm.canonicalL2Quotient_isStrictlySingular}
+\leanok
 \end{theorem}
 
 \begin{proof}
-This is Lemma~5.4 of Castillo--Gonz\'alez--Pino \cite{CGP}, in the cited preprint version.
+Assume a bounded approximation on $M$ and bundle it as a bounded lift $L:M\to Z_2^{\mathrm{can}}$.
+Apply Lemma~\ref{lem:hilbert-gliding-hump}, compare $Ly_n$ with the corresponding canonical block
+images, and approximate their differences by vectors in $\ker p=i[\ell_2]$.  A Hilbert-space
+sign choice keeps the normalized signed kernel errors uniformly bounded.  Hence all signed
+canonical block images remain uniformly bounded.  Their preimages under the block operator have
+exact quasi-norm $\log N+1$, contradicting the bounded block left inverse as $N\to\infty$.
+\end{proof}
+
+\begin{lemma}[Corrected canonical upper-restriction implication]
+\label{lem:corrected-cgp-upper-restriction}
+Let $B$ be a bounded operator on $Z_2^{\mathrm{can}}$.  If $B$ is not upper
+semi-Fredholm, then neither is its kernel restriction $Bi:\ell_2\to Z_2^{\mathrm{can}}$.
+Moreover, there is a successive normalized Hilbert block embedding $U_w$ for which
+\[
+  BiU_w
+\]
+is compact.  Equivalently, the target-minimal canonical kernel compact-block extraction
+property holds.
+\uses{lem:basic-sequence-compact-restriction,lem:canonical-kernel-approximation,lem:compact-canonical-block-extraction,thm:canonical-centralizer-obstruction,lem:upper-semi-not-strictly-singular}
+\lean{KaltonPeck.Support.GraphFredholm.Canonical.exists_compact_kernel_embedding_of_compactRestriction, KaltonPeck.Support.GraphFredholm.Canonical.not_upperSemi_comp_canonicalL2Inclusion_of_not_upper, KaltonPeck.Support.GraphFredholm.Canonical.exists_compact_canonicalL2Block_of_not_upper, KaltonPeck.Support.GraphFredholm.canonical_not_upperSemi_comp_canonicalL2Inclusion_of_not_upper, KaltonPeck.Support.GraphFredholm.HasCanonicalKernelCompactBlockExtraction, KaltonPeck.Support.GraphFredholm.hasCanonicalKernelCompactBlockExtraction}
+\leanok
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:basic-sequence-compact-restriction}, $B$ is compact on a closed
+infinite-dimensional subspace $M$.  Strict singularity of $p$ yields a biorthogonal sequence in
+$M$ on which $p$ is summably small.  Approximate those vectors by vectors in $\ker p$ and sum the
+resulting rank-one errors to obtain a compact operator $K$ with $\lVert K\rVert<1$ on a tail.
+The map $I-K$ is bounded below there, its image lies in $\ker p=\ran i$, and $B(I-K)$ is compact.
+Factoring this embedding through $i$ gives a bounded-below map $R$ for which $BiR$ is compact.
+If $Bi$ were upper semi-Fredholm, then so would be $BiR$, contradicting strict singularity of a
+compact operator on an infinite-dimensional space.  Finally apply
+Lemma~\ref{lem:compact-canonical-block-extraction} to $Bi$.
+\end{proof}
+
+\begin{lemma}[Canonical exact-sequence adjoint bridges]
+\label{lem:canonical-exact-sequence-adjoint-bridges}
+Write $i:\ell_2\to Z_2^{\mathrm{can}}$ and
+$p:Z_2^{\mathrm{can}}\to\ell_2$ for the canonical inclusion and quotient.  The canonical form
+satisfies
+\[
+  \Omega_{\mathrm{can}}(ix,z)=\langle x,pz\rangle,
+  \qquad
+  \Omega_{\mathrm{can}}(z,ix)=-\langle pz,x\rangle .
+\]
+If $g_k$ is the $k$th canonical quotient-coordinate basis vector, then
+\[
+  \Omega_{\mathrm{can}}(ix,g_k)=x_k.
+\]
+Furthermore, if $(w_n)$ is a successive normalized Hilbert block sequence, $U_w$ its block
+isometry, $A:\ell_2\to Z_2^{\mathrm{can}}$ is bounded, and $z$ is fixed, then
+\[
+  \Omega_{\mathrm{can}}(AU_we_n,z)\longrightarrow0.
+\]
+If $Ri=0$, then $R=Lp$ for a bounded $L:\ell_2\to Z_2^{\mathrm{can}}$, and $R^+$ has range in
+$\ker p=\ran i$, hence factors through $i$.  More precisely, if $Vi=iv$, then
+\[
+  (R^+V)i=i\,(pL)^*v.
+\]
+For every bounded $T$ on the canonical space,
+\[
+  pT^+i=-(pTi)^*.
+\]
+Both $pTi$ and $pT^+i$ are therefore strictly singular.
+\uses{thm:ks-primary,thm:block-primary,lem:hilbert-gliding-hump,lem:strictly-singular-comp,thm:canonical-centralizer-obstruction}
+\lean{KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm_inclusion_left, KaltonPeck.Support.Symplectic.canonicalKaltonSwansonForm_inclusion_right, KaltonPeck.Support.GraphFredholm.canonical_pairing_inclusion_secondBasis, KaltonPeck.Support.GraphFredholm.tendsto_canonical_pairing_apply_block_zero, KaltonPeck.Support.GraphFredholm.canonical_factor_through_quotient, KaltonPeck.Support.GraphFredholm.canonical_symplecticAdjoint_range_le_quotientKernel, KaltonPeck.Support.GraphFredholm.canonical_symplecticAdjoint_factor_through_inclusion, KaltonPeck.Support.GraphFredholm.canonical_remainderAdjoint_kernel_formula, KaltonPeck.Support.GraphFredholm.canonical_symplecticAdjoint_kernelCompression, KaltonPeck.Support.GraphFredholm.canonical_quotient_operator_inclusion_isStrictlySingular, KaltonPeck.Support.GraphFredholm.canonical_quotient_symplecticAdjoint_inclusion_isStrictlySingular}
+\leanok
+\end{lemma}
+
+\begin{proof}
+The two pairing formulas follow first on finite-coordinate vectors and then by density and
+continuity.  The basis-coordinate identity is the first pairing formula specialized to $g_k$.
+For the limit identity, composition with $A$, $U_w$, and pairing against $z$ gives a continuous
+functional on $\ell_2$; apply the weak convergence of the standard unit-vector basis.  The
+quotient universal property factors every operator which kills $\ran i$ through $p$.  Applying
+the defining adjoint equation to the first pairing formula puts the adjoint range
+in $\ker p$, where the inverse of $i$ gives the second factorization.  The same pairing calculation
+identifies the displayed cross term and compression with the ordinary Hilbert adjoints.  Finally,
+strict singularity of $p$, composition closure, Hilbert-adjoint invariance, and negation closure
+give the last assertion.
+\end{proof}
+
+\begin{lemma}[Canonical strictly-singular lifting]
+\label{lem:canonical-strictly-singular-lifting}
+Let $T$ be a bounded operator on $Z_2^{\mathrm{can}}$.  If its restriction
+$Ti:\ell_2\to Z_2^{\mathrm{can}}$ is strictly singular, then $T$ is strictly singular.
+More generally, this conclusion follows from strict singularity of the canonical quotient $p$
+and of $Ti$.
+\uses{def:strictly-singular,lem:strictly-singular-comp,lem:canonical-kernel-approximation,thm:canonical-centralizer-obstruction}
+\lean{KaltonPeck.Support.GraphFredholm.canonical_isStrictlySingular_of_inclusion_of_quotient, KaltonPeck.Support.GraphFredholm.canonical_isStrictlySingular_of_inclusion}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Suppose instead that an infinite-dimensional Banach space embeds through a bounded-below map
+$S$ so that $TS$ is also bounded below.  Since $pS$ is strictly singular, choose a biorthogonal
+sequence on which its weighted image norms are summable.  On a sufficiently far tail,
+Lemma~\ref{lem:canonical-kernel-approximation} gives kernel vectors close enough to the images
+under $S$.  A norm-convergent rank-one interpolation series produces a small operator $P$
+matching these errors.
+
+On the closed span of the tail, $J=S-P$ takes values in $\ker p=\ran i$.  The perturbation is
+small enough that both $J$ and $TJ$ remain bounded below.  Factor $J=iL$ through the canonical
+inclusion.  Then $L$ is bounded below and $(Ti)L=TJ$ is bounded below, contradicting strict
+singularity of $Ti$.  Strict singularity of $p$ is supplied by
+Theorem~\ref{thm:canonical-centralizer-obstruction}.
+\end{proof}
+
+\begin{theorem}[Canonical CGP operator propositions]
+\label{thm:cgp-operator-propositions}
+For every bounded $T:Z_2^{\mathrm{can}}\to Z_2^{\mathrm{can}}$:
+\begin{enumerate}
+\item if $T^+T$ is strictly singular, then $T$ is strictly singular;
+\item if $Ti$ is strictly singular for the canonical inclusion $i:\ell_2\to Z_2^{\mathrm{can}}$,
+then $T$ is strictly singular;
+\item if $Ti$ is upper semi-Fredholm, then $T$ is upper semi-Fredholm.
+\end{enumerate}
+\uses{def:upper-semi,def:strictly-singular,lem:strictly-singular-comp,lem:canonical-hilbert-strictly-singular-compact,lem:canonical-kernel-approximation,lem:basic-sequence-compact-restriction,lem:corrected-cgp-upper-restriction,lem:canonical-exact-sequence-adjoint-bridges,lem:canonical-strictly-singular-lifting,thm:canonical-centralizer-obstruction,thm:block-primary}
+\notready
+\end{theorem}
+
+\begin{proof}
+These are CGP Proposition~5.3(a)--(c).  Part (b) is
+Lemma~\ref{lem:canonical-strictly-singular-lifting}.  Part (c), including the corrected
+published biorthogonal perturbation argument on $(I-K)[N]$, is
+Lemma~\ref{lem:corrected-cgp-upper-restriction}.  The additive and adjoint-stability layers, the
+Hilbert-space equivalence between strict singularity and compactness, and the exact-sequence
+bridges required by the source strategy are also formalized.  The full three-part node remains
+open only because part (a), the implication from strict singularity of $T^+T$ to strict
+singularity of $T$, has not yet been derived.
+\end{proof}
+
+\begin{lemma}[Compact biadjoint kernel-column correction]
+\label{lem:compact-biadjoint-kernel-correction}
+Let $(d_n)$ be a sequence in $Z_2^{\mathrm{can}}$ satisfying
+\[
+  \sum_n\lVert d_n\rVert<\infty.
+\]
+There is a compact operator $K$ on $Z_2^{\mathrm{can}}$ whose symplectic adjoint $K^+$ is also
+compact and which sends the canonical kernel basis vector $f_n=i(e_n)$ to $d_n$ for every $n$.
+\uses{thm:ks-primary,lem:canonical-exact-sequence-adjoint-bridges}
+\lean{KaltonPeck.Support.GraphFredholm.exists_compact_biadjoint_kernelCorrection}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Pairing against the canonical second-coordinate basis gives uniformly bounded functionals
+$\varphi_n$ satisfying $\varphi_n(f_m)=\delta_{nm}$.  The rank-one series
+\[
+  K=\sum_n \varphi_n\otimes d_n
+\]
+converges in operator norm, interpolates the prescribed values, and is compact.  Computing
+symplectic adjoints term by term gives another norm-convergent series of rank-one operators:
+its $n$th term sends $z$ to $\Omega_{\mathrm{can}}(d_n,z)$ times the $n$th
+second-coordinate basis vector.  Hence $K^+$ is compact as well.
+\end{proof}
+
+\begin{definition}[Upper summable kernel-block approximation]
+\label{def:upper-summable-kernel-block-approximation}
+The \emph{upper summable kernel-block approximation property} asserts that every upper
+semi-Fredholm operator $T$ admits canonical normalized block operators $W_w,W_v$ and a nonzero
+real scalar $\alpha$ for which
+\[
+  \sum_n\left\lVert T W_w f_n-\alpha W_v f_n\right\rVert<\infty,
+  \qquad f_n=i(e_n).
+\]
+\uses{def:upper-semi,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.HasUpperSummableKernelBlockApproximation}
+\leanok
+\end{definition}
+
+\begin{lemma}[Canonical upper summable kernel-block selection]
+\label{lem:upper-summable-kernel-block-selection}
+The upper summable kernel-block approximation property holds on
+$Z_2^{\mathrm{can}}$.
+\uses{def:upper-summable-kernel-block-approximation,lem:upper-semi-calculus,lem:canonical-hilbert-strictly-singular-compact,lem:upper-semi-not-strictly-singular,lem:compact-canonical-block-extraction,lem:canonical-kernel-approximation,lem:hilbert-gliding-hump,lem:canonical-exact-sequence-adjoint-bridges,thm:canonical-centralizer-obstruction,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.hasUpperSummableKernelBlockApproximation}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Let $T$ be upper semi-Fredholm and put $A=Ti$.  The quotient compression $pA$ is strictly
+singular and hence compact on $\ell_2$; the orthogonal projection onto $\ker A$ is compact as well.
+Apply the summable block-extraction theorem to their product.  This gives normalized successive
+source blocks $(b_n)$ for which both quotient images and kernel projections are summable.
+
+Closed range and finite-dimensional kernel give a lower bound for $A$ on the orthogonal complement
+of its kernel.  After discarding a finite head, the small kernel projections therefore make
+$\lVert Ab_n\rVert$ uniformly positive.  Controlled approximation by $\ker p=\ran i$ supplies
+vectors $a_n\in\ell_2$ such that $Ab_n-ia_n$ is summable, while the norms $\lVert a_n\rVert$ stay
+between two positive constants.  Pass to a subsequence whose norms converge summably fast to some
+$\alpha>0$.
+
+The canonical pairing identities show that every coordinate of $a_n$ tends to zero.  Normalize and
+apply the coordinatewise-null gliding-hump theorem to obtain successive target blocks.  Combining
+the kernel-approximation errors, the scalar norm errors, and the target block-approximation errors
+gives
+\[
+  \sum_n\lVert TW_wf_n-\alpha W_vf_n\rVert<\infty ,
+\]
+which is the required property.
+\end{proof}
+
+\begin{definition}[Retained upper compact-Gram factorization]
+\label{def:upper-compact-gram-factorization}
+The \emph{upper compact-Gram factorization property} asserts that every upper semi-Fredholm
+$T$ admits bounded operators $W,V,R,K$ on $Z_2^{\mathrm{can}}$, bounded operators $u,v$ on
+$\ell_2$, and a nonzero real scalar $\alpha$ such that
+\[
+\begin{gathered}
+  Wi=iu,\qquad Vi=iv,\qquad V^+V=I,\\
+  TW=\alpha V+R+K,\qquad Ri=0,
+\end{gathered}
+\]
+and both $K$ and $K^+$ are compact.
+\uses{def:upper-semi,thm:ks-primary}
+\lean{KaltonPeck.Support.GraphFredholm.HasUpperCompactGramFactorization}
+\leanok
+\end{definition}
+
+\begin{lemma}[Summable kernel blocks give the retained factorization]
+\label{lem:summable-kernel-block-factorization}
+The upper summable kernel-block approximation property implies the retained upper compact-Gram
+factorization property.
+\uses{def:upper-summable-kernel-block-approximation,def:upper-compact-gram-factorization,lem:compact-biadjoint-kernel-correction,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.hasUpperCompactGramFactorization_of_summableKernelBlockApproximation}
+\leanok
+\end{lemma}
+
+\begin{proof}
+For an upper semi-Fredholm $T$, choose $W=W_w$, $V=W_v$, and $\alpha\ne0$ from the summable
+block approximation.  Apply Lemma~\ref{lem:compact-biadjoint-kernel-correction} to the errors
+$d_n=TWf_n-\alpha Vf_n$, obtaining $K$ with both $K$ and $K^+$ compact.  Set
+\[
+  R=TW-\alpha V-K.
+\]
+The interpolation identities give $Rf_n=0$ for every canonical kernel basis vector.  Density of
+their span and continuity imply $Ri=0$.  The normalized-block identities give
+$Wi=iu$, $Vi=iv$, and $V^+V=I$, so these operators satisfy every clause of the retained
+factorization.
+\end{proof}
+
+\begin{lemma}[Target-specific compact-Gram reduction]
+\label{lem:target-compact-gram-reduction}
+Assume the upper compact-Gram factorization property.  If $T$ is upper semi-Fredholm, then the
+kernel restriction $(T^+T)i$ is not compact.  Together with the corrected canonical
+compact-block extraction, this gives
+\[
+  A\ \hbox{upper semi-Fredholm}\quad\Longrightarrow\quad A^+A\
+  \hbox{upper semi-Fredholm}.
+\]
+\uses{def:upper-compact-gram-factorization,lem:canonical-exact-sequence-adjoint-bridges,lem:corrected-cgp-upper-restriction,lem:strictly-singular-comp,lem:compact-strictly-singular,lem:upper-semi-not-strictly-singular,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.HasCanonicalKernelCompactBlockExtraction, KaltonPeck.Support.GraphFredholm.upperSemi_gramKernel_not_compact_of_factorization, KaltonPeck.Support.GraphFredholm.canonicalGram_isUpperSemiFredholm_of_compactBlock_and_noncompactGram, KaltonPeck.Support.GraphFredholm.canonicalGram_isUpperSemiFredholm_of_targetFactorizations}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Conjugate the assumed compact restriction of $T^+T$ by $W$.  Expanding the Gram operator of
+$TW=\alpha V+R+K$ leaves the leading term $\alpha^2 i$.  The terms containing $K$ are compact
+and hence strictly singular.  Since $R=Lp$ and $Vi=iv$, the only remaining cross term is
+$i(pL)^*v$, which is strictly singular by
+Lemma~\ref{lem:canonical-exact-sequence-adjoint-bridges}.  Additive ideal calculus would therefore
+make the nonzero scalar multiple $\alpha^2 i$ strictly singular, contradicting upper
+semi-Fredholmness of $i$.
+
+For the consequence, suppose $B=A^+A$ is not upper semi-Fredholm and extract a block operator
+$W$ for which $BWi$ is compact.  Then $AW$ is upper semi-Fredholm, while its Gram restriction
+$W^+BWi$ is compact, contradicting the preceding noncompactness conclusion.
+\end{proof}
+
+\begin{lemma}[Formal CGP Gram reduction]\label{lem:cgp-primary-reduction}
+Assume the three implications in Theorem~\ref{thm:cgp-operator-propositions}.  If $A$ is upper
+semi-Fredholm on $Z_2^{\mathrm{can}}$, then $A^+A$ is upper semi-Fredholm.  Every canonical
+normalized block operator is itself upper semi-Fredholm.
+\uses{thm:cgp-operator-propositions,def:upper-semi,lem:upper-semi-calculus,lem:strictly-singular-comp,lem:compact-strictly-singular,lem:upper-semi-not-strictly-singular,lem:compact-canonical-block-extraction,thm:block-primary}
+\lean{KaltonPeck.Support.GraphFredholm.canonicalBlockOperator_isUpperSemiFredholm, KaltonPeck.Support.GraphFredholm.canonicalGram_isUpperSemiFredholm_of_cgpPropositions}
+\leanok
+\end{lemma}
+
+\begin{proof}
+Put $B=A^+A$ and suppose $B$ is not upper semi-Fredholm.  Proposition~5.3(c) implies that $Bi$
+is not upper semi-Fredholm, so choose a Hilbert block embedding $i_w$ for which $Bii_w$ is
+compact.  For its canonical block operator $W$, the identity $Wi=ii_w$ makes $(BW)i$ compact,
+hence strictly singular.  Proposition~5.3(b) makes $BW$ strictly singular, and the
+strictly-singular composition calculus gives
+\[
+  (AW)^+(AW)=W^+BW
+\]
+strictly singular.  Proposition~5.3(a) makes $AW$ strictly singular.  But $W^+W=I$, so $W$ is
+upper semi-Fredholm; composition calculus makes $AW$ upper semi-Fredholm, a contradiction.
+\end{proof}
+
+\begin{theorem}[Canonical Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-primary}
+On $Z_2^{\mathrm{can}}$ with the canonical Kalton--Swanson form, let $A$ be a bounded operator.  If
+$\ker A$ is finite-dimensional and $\ran A$ is closed, then $A^+A$ is Fredholm.
+\uses{thm:ks-primary,def:fredholm-rank,lem:upper-summable-kernel-block-selection,lem:summable-kernel-block-factorization,lem:target-compact-gram-reduction,lem:adjoint-calculus}
+\lean{KaltonPeck.Support.GraphFredholm.cgpPrimary}
+\leanok
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:upper-summable-kernel-block-selection} establishes the required block-selection
+property.  Lemma~\ref{lem:summable-kernel-block-factorization} therefore supplies the retained
+factorization, and
+Lemma~\ref{lem:target-compact-gram-reduction} makes $A^+A$ upper semi-Fredholm.
+The operator $A^+A$ is self-adjoint.  On a strongly symplectic Banach space the kernel of a
+self-adjoint operator is isomorphic to the annihilator of its range, so finite-dimensional
+kernel and closed range force finite-dimensional cokernel.  Hence $A^+A$ is Fredholm.
 \end{proof}
 
 \begin{theorem}[Transported Castillo--Gonz\'alez--Pino theorem]\label{thm:cgp-transport}
@@ -343,6 +877,7 @@ Kalton--Swanson form.  If a bounded operator $A$ on $X$ is upper semi-Fredholm, 
 Fredholm.
 \uses{thm:cgp-primary,thm:presentation-equivalence,thm:ks-transport,lem:fredholm-calculus,lem:adjoint-calculus}
 \lean{KaltonPeck.Support.GraphFredholm.cgpTransport}
+\leanok
 \end{theorem}
 
 \begin{proof}

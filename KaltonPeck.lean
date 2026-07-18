@@ -108,7 +108,38 @@ theorem rankParityGeneral {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X]
     (hFredholm : IsFredholm (1 + ω.adjoint T * T))
     (hFiniteRank : HasFiniteRank (T ^ 2 + 1)) :
     Nat.ModEq 2 (operatorRank (T ^ 2 + 1)) (nullity (1 + ω.adjoint T * T)) := by
-  sorry
+  let omega : Support.StrongSymplecticForm X :=
+    { toDual := ω.toDual
+      alternating := ω.alternating }
+  have hadj : omega.adjoint T = ω.adjoint T := by rfl
+  have hFred : Support.IsFredholm (1 + omega.adjoint T * T) := by
+    rw [hadj]
+    exact hFredholm
+  have hFinite : Support.HasFiniteRank (T ^ 2 + 1) := hFiniteRank
+  let E := (T ^ 2 + 1).toLinearMap.ker
+  obtain ⟨hEclosed, hEfinite, hEdim, _, _⟩ :=
+    Support.GeneralRank.finiteRankPolynomialKernel T hFinite
+  letI : IsClosed (E : Set X) := hEclosed
+  letI : FiniteDimensional ℝ (X ⧸ E) := hEfinite
+  let eta := (Support.GeneralRank.rankParityForm omega T).form
+  have hEtaFred : Support.IsFredholm eta.toDual :=
+    (Support.GeneralRank.rankParityForm omega T).isFredholm hFred
+  obtain ⟨hRfinite, hParity⟩ :=
+    Support.FiniteCodim.finiteCodimParity eta
+      (Support.Forms.strongSymplecticReflexive omega) hEtaFred E
+  letI : FiniteDimensional ℝ (eta.restrictedRadical E) := hRfinite
+  have hREven : Even (Module.finrank ℝ (eta.restrictedRadical E)) := by
+    simpa [eta, E] using
+      (Support.GeneralRank.restrictedRadicalEven omega T hFinite).2
+  rw [hEdim, (Support.GeneralRank.rankParityForm omega T).radical_eq_kernel] at hParity
+  rcases hREven with ⟨k, hk⟩
+  unfold Nat.ModEq at hParity ⊢
+  change Support.operatorRank (T ^ 2 + 1) % 2 =
+    Support.nullity (1 + omega.adjoint T * T) % 2
+  change Support.operatorRank (T ^ 2 + 1) % 2 =
+    (Support.nullity (1 + omega.adjoint T * T) +
+      Module.finrank ℝ (eta.restrictedRadical E)) % 2 at hParity
+  omega
 
 /- Source: paper.tex, label `thm:rank_parity_Z2`, lines 109--114. Approved representation: `Z₂`
 ranges over complete real normed spaces carrying `RealKaltonPeckPresentation`; `L(Z₂)` is modeled
@@ -117,7 +148,27 @@ Approval record: `agent_outputs/AUDIT.md`, decision `DEC-USER-STATEMENT-CONFIRM`
 theorem rankParityZ2 {Z₂ : Type*} [NormedAddCommGroup Z₂] [NormedSpace ℝ Z₂]
     [CompleteSpace Z₂] (_hZ₂ : RealKaltonPeckPresentation Z₂) (T : Z₂ →L[ℝ] Z₂)
     (hFiniteRank : HasFiniteRank (T ^ 2 + 1)) : Even (operatorRank (T ^ 2 + 1)) := by
-  sorry
+  let hZ : Support.RealKaltonPeckPresentation Z₂ :=
+    { coordinates := _hZ₂.coordinates
+      coordinates_injective := _hZ₂.coordinates_injective
+      coordinates_mem := _hZ₂.coordinates_mem
+      coordinates_surjective := _hZ₂.coordinates_surjective
+      norm_equivalent := _hZ₂.norm_equivalent }
+  let omegaS := Support.Symplectic.transportedKaltonSwansonForm hZ
+  let omega : StrongSymplecticForm Z₂ :=
+    { toDual := omegaS.toDual
+      alternating := omegaS.alternating }
+  have hadj : omega.adjoint T = omegaS.adjoint T := by rfl
+  obtain ⟨hFredS, hEvenKernel⟩ :=
+    Support.GraphFredholm.evenGraphKernel hZ T
+  have hFred : IsFredholm (1 + omega.adjoint T * T) := by
+    rw [hadj]
+    exact hFredS
+  have hParity := rankParityGeneral omega T hFred hFiniteRank
+  apply even_iff_two_dvd.mpr
+  apply Nat.modEq_zero_iff_dvd.mp
+  exact hParity.trans
+    (Nat.modEq_zero_iff_dvd.mpr (even_iff_two_dvd.mp hEvenKernel))
 
 /- Source: paper.tex, label `cor:no-hyperplane-complex`, lines 718--720. Approved representation:
 `Z₂` carries `RealKaltonPeckPresentation`; a hyperplane is a closed codimension-one submodule via
@@ -127,7 +178,14 @@ theorem rankParityZ2 {Z₂ : Type*} [NormedAddCommGroup Z₂] [NormedSpace ℝ Z
 theorem noHyperplaneComplexStructure {Z₂ : Type*} [NormedAddCommGroup Z₂]
     [NormedSpace ℝ Z₂] [CompleteSpace Z₂] (_hZ₂ : RealKaltonPeckPresentation Z₂) :
     ∀ H : Submodule ℝ Z₂, IsHyperplane H → ¬∃ J : H →L[ℝ] H, IsComplexStructure J := by
-  sorry
+  intro H hH
+  rintro ⟨J, hJ⟩
+  obtain ⟨_, _, _, _, T, _, _, _, _, _, hFinite, hRank⟩ :=
+    Support.TargetSupport.hyperplaneExtension H hH J hJ
+  have hEven := rankParityZ2 _hZ₂ T hFinite
+  have hRankRoot : operatorRank (T ^ 2 + 1) = 1 := hRank
+  rw [hRankRoot] at hEven
+  exact Nat.not_even_one hEven
 
 end
 
