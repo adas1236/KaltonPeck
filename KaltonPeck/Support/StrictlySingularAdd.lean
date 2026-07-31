@@ -1,5 +1,17 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.StrictlySingular
 import Mathlib.Analysis.Normed.Module.HahnBanach
+
+/-!
+# Additive calculus for strictly singular operators
+
+This file constructs controlled biorthogonal sequences for strictly singular operators and
+proves closure under addition, real scalar multiplication, and negation.
+-/
 
 set_option autoImplicit false
 

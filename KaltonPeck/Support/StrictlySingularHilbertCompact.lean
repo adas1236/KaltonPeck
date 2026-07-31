@@ -1,7 +1,19 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Symplectic
 import KaltonPeck.Support.StrictlySingularHilbert
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.Normed.Lp.lpHolder
+
+/-!
+# Strict singularity implies compactness on the canonical Hilbert space
+
+This file proves that every strictly singular endomorphism of the canonical real Hilbert space
+is compact by approximation with finite-dimensional compressions.
+-/
 
 set_option autoImplicit false
 

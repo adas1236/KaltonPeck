@@ -1,8 +1,19 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.CgpCompactRestriction
 import KaltonPeck.Support.StrictlySingularAdd
 
+/-!
+# Strictly singular lifting on the canonical Kalton--Peck space
+
+This file uses biorthogonal interpolation to lift strict singularity from the canonical Hilbert
+kernel and quotient to operators on the full canonical Kalton--Peck space.
+-/
+
 set_option autoImplicit false
-set_option maxHeartbeats 800000
 
 namespace KaltonPeck.Support.GraphFredholm
 
@@ -176,6 +187,8 @@ private theorem exists_antilipschitz_sub_of_apply_norm_le
   rw [div_mul_eq_mul_div]
   exact (le_div_iff₀ hden).2 hcore
 
+set_option maxHeartbeats 800000 in
+-- The biorthogonal interpolation argument needs more elaboration time than the default limit.
 /-- Canonical Proposition 5.3(b): strict singularity on the canonical kernel forces
 strict singularity on all of `Z₂`. -/
 theorem canonical_isStrictlySingular_of_inclusion_of_quotient

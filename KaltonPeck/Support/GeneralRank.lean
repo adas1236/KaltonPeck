@@ -1,7 +1,19 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.FiniteCodim
 import KaltonPeck.Support.Forms
 import KaltonPeck.Support.FiniteParity
 import KaltonPeck.Support.Fredholm
+
+/-!
+# General rank-parity reduction
+
+This file analyzes the kernel of a finite-rank polynomial defect, constructs the associated
+rank-parity form, and proves evenness of its restricted radical.
+-/
 
 namespace KaltonPeck.Support.GeneralRank
 

@@ -1,5 +1,17 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Operator.NormedSpace
+
+/-!
+# Core operator and symplectic definitions
+
+This file defines continuous alternating and strong symplectic forms, together with the
+Fredholm, finite-rank, complex-structure, and hyperplane notions used throughout the project.
+-/
 
 namespace KaltonPeck.Support
 

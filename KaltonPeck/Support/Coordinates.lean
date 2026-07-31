@@ -1,6 +1,18 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Definitions
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+
+/-!
+# Coordinates for the real Kalton--Peck space
+
+This file develops coordinate presentations of the real Kalton--Peck space, constructs the
+canonical model and quotient map, and compares arbitrary complete presented models.
+-/
 
 set_option autoImplicit false
 
@@ -1636,8 +1648,9 @@ theorem presentationEquiv_spec {X Y : Type*} [NormedAddCommGroup X] [NormedSpace
             ∀ y, ‖(presentationEquiv hX hY).symm y‖ ≤ (CX / cY) * ‖y‖ := by
   have hcoordinates (x : X) :
       hY.coordinates (presentationEquiv hX hY x) = hX.coordinates x := by
-    simp [presentationEquiv, LinearEquiv.toContinuousLinearEquivOfBounds,
-      LinearEquiv.ofBijective]
+    simp only [presentationEquiv, LinearEquiv.toContinuousLinearEquivOfBounds,
+      LinearEquiv.ofBijective, ContinuousLinearEquiv.coe_mk, LinearEquiv.trans_apply,
+      LinearEquiv.ofTop_apply, LinearEquiv.ofInjective_apply, LinearMap.coe_mk, AddHom.coe_mk]
     exact Classical.choose_spec
       (hY.coordinates_surjective (hX.coordinates x) (hX.coordinates_mem x))
   refine ⟨hcoordinates, ?_, ?_⟩

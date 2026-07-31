@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Definitions
 import KaltonPeck.Support.Forms
 import KaltonPeck.Support.Fredholm
@@ -9,6 +14,13 @@ import KaltonPeck.Support.Coordinates
 import KaltonPeck.Support.Symplectic
 import KaltonPeck.Support.GraphFredholm
 import KaltonPeck.Support.TargetSupport
+
+/-!
+# The Kalton--Peck rank-parity obstruction
+
+This file exposes the project-level definitions and the main rank-parity and hyperplane
+obstruction theorems.
+-/
 
 namespace KaltonPeck
 

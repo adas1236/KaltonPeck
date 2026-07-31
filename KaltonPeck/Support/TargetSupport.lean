@@ -1,4 +1,16 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Definitions
+
+/-!
+# Hyperplane extensions of complex structures
+
+This file extends a complex structure from a closed hyperplane to the ambient Banach space and
+computes the rank of the resulting square defect.
+-/
 
 set_option autoImplicit false
 

@@ -1,7 +1,19 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Definitions
 import KaltonPeck.Support.Forms
 import Mathlib.Algebra.Module.LinearMap.Index
 import Mathlib.Analysis.Normed.Module.ContinuousInverse
+
+/-!
+# Fredholm operator calculus
+
+This file develops quotient-by-kernel descriptions of ranges and proves invariance, composition,
+index, and range results for Fredholm operators.
+-/
 
 namespace KaltonPeck.Support.Fredholm
 

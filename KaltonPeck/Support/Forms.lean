@@ -1,7 +1,19 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Definitions
 import Mathlib.Analysis.Normed.Module.DoubleDual
 import Mathlib.Analysis.Normed.Group.Quotient
 import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+
+/-!
+# Duality and symplectic adjoints
+
+This file develops continuous annihilators, quotient-dual equivalences, reflexivity induced by
+strong symplectic forms, and the basic algebraic API for symplectic adjoints.
+-/
 
 namespace KaltonPeck.Support.Forms
 

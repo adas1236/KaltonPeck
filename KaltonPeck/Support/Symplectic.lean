@@ -1,8 +1,20 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Coordinates
 import KaltonPeck.Support.Forms
 import Mathlib.Analysis.InnerProductSpace.Dual
 import Mathlib.Analysis.InnerProductSpace.l2Space
 import Mathlib.Analysis.Normed.Operator.Banach
+
+/-!
+# The canonical symplectic structure
+
+This file constructs the canonical Kalton--Swanson symplectic form, transports it to arbitrary
+Kalton--Peck presentations, and develops the associated block-operator theory.
+-/
 
 set_option autoImplicit false
 
@@ -805,8 +817,8 @@ Blueprint label: `thm:ks-primary`; audit IDs `EXT-KS-PRIMARY`, `INF-KP-L2-PAIRIN
 `BLK-KS-PAIRING`. -/
 theorem canonicalKaltonSwansonForm_finite_coordinates
     (z w : CanonicalRealKaltonPeck)
-    (hz : IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates z))
-    (hw : IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates w)) :
+    (_hz : IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates z))
+    (_hw : IsFiniteCoordinatePair (canonicalRealKaltonPeckPresentation.coordinates w)) :
     canonicalKaltonSwansonForm.toDual z w =
       ∑' n : ℕ,
         ((canonicalRealKaltonPeckPresentation.coordinates z).1 n *

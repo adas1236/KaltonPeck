@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Symplectic
 import KaltonPeck.Support.CanonicalPairing
 import KaltonPeck.Support.CgpBlockExtraction
@@ -10,6 +15,13 @@ import KaltonPeck.Support.PathParity
 import KaltonPeck.Support.StrictlySingularAdd
 import KaltonPeck.Support.StrictlySingularHilbert
 import KaltonPeck.Support.StrictlySingularHilbertCompact
+
+/-!
+# Fredholm analysis of canonical graph operators
+
+This file combines strict singularity, block extraction, and compact-factorization arguments to
+establish the main Fredholm results for canonical operators on the Kalton--Peck space.
+-/
 
 set_option autoImplicit false
 

@@ -1,5 +1,17 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.CanonicalPairing
 import Mathlib.Analysis.Normed.Operator.Compact.FiniteDimension
+
+/-!
+# Compact kernel corrections
+
+This file extends summable errors on the canonical Hilbert-kernel basis to a compact ambient
+operator whose symplectic adjoint is also compact.
+-/
 
 set_option autoImplicit false
 

@@ -1,4 +1,16 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.Symplectic
+
+/-!
+# Canonical symplectic pairing identities
+
+This file extends the finite-coordinate formulas for the canonical Kalton--Swanson form to
+pairings with the canonical Hilbert-space inclusion.
+-/
 
 set_option autoImplicit false
 

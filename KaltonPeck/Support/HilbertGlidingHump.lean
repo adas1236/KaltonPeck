@@ -1,4 +1,17 @@
+/-
+Copyright (c) 2026 adas1236. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: adas1236
+-/
 import KaltonPeck.Support.CgpBlockExtraction
+
+/-!
+# Hilbert-space gliding-hump arguments
+
+This file constructs successive normalized finite-support blocks approximating vectors in
+infinite-dimensional Hilbert subspaces and coordinatewise-null sequences, together with uniform
+signed-average estimates.
+-/
 
 set_option autoImplicit false
 
