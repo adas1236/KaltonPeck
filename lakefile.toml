@@ -9,6 +9,7 @@ lintDriver = "batteries/runLinter"
 pp.unicode.fun = true
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
+linter.style.header = false
 maxSynthPendingDepth = 3
 
 [[require]]
